@@ -7,7 +7,9 @@ let accessToken: string | null = null;
 const api = axios.create({
   baseURL: "http://localhost:4000/api",
   withCredentials: true,
+  xsrfHeaderName: "x-csrf-token",
   xsrfCookieName: "csrf-token",
+  withXSRFToken: true,
 });
 
 api.interceptors.request.use((config) => {
@@ -21,7 +23,7 @@ api.interceptors.request.use((config) => {
 createAuthRefreshInterceptor(api, async (failedRequest) => {
   if (failedRequest.status !== 401) return Promise.reject();
 
-  return api.post("/auth/refresh").then((res: AxiosResponse) => {
+  return api.post("/auth/refresh-token").then((res: AxiosResponse) => {
     if (res.statusText === "ok") return Promise.reject();
     accessToken = res.data.data.accessToken;
     return Promise.resolve();

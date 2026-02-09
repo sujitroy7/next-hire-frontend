@@ -23,11 +23,16 @@ api.interceptors.request.use((config) => {
 createAuthRefreshInterceptor(api, async (failedRequest) => {
   if (failedRequest.status !== 401) return Promise.reject();
 
-  return api.post("/auth/refresh-token").then((res: AxiosResponse) => {
-    if (res.statusText === "ok") return Promise.reject();
-    accessToken = res.data.data.accessToken;
-    return Promise.resolve();
-  });
+  return api
+    .post("/auth/refresh-token")
+    .then((res: AxiosResponse) => {
+      if (res.statusText !== "OK") return Promise.reject(res);
+      accessToken = res.data.data.accessToken;
+      return Promise.resolve(res);
+    })
+    .catch((err) => {
+      return Promise.reject(err);
+    });
 });
 
 export default api;

@@ -4,7 +4,7 @@ import axios from "axios";
 
 // Create axios instance
 const api = axios.create({
-  baseURL: "http://localhost:4000/api",
+  baseURL: "http://localhost:4000",
 });
 
 // Request Interceptor: Injects the latest token from redux

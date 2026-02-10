@@ -34,7 +34,9 @@ export const login = createAsyncThunk(
     { rejectWithValue },
   ) => {
     try {
-      const response = await axios.post(LOGIN_API_URL, credentials);
+      const response = await axios.post(LOGIN_API_URL, credentials, {
+        withCredentials: true,
+      });
       return response.data.data.accessToken;
     } catch (error: any) {
       return rejectWithValue(error.response.data?.message || "Login failed");
@@ -48,7 +50,11 @@ export const logout = createAsyncThunk(
   "auth/logout",
   async (_, { rejectWithValue }) => {
     try {
-      const response = await axios.post(LOGOUT_API_URL);
+      const response = await axios.post(
+        LOGOUT_API_URL,
+        {},
+        { withCredentials: true },
+      );
       return response.data.status === "success";
     } catch (error: any) {
       return rejectWithValue(error.response.data.message || "Logout Failed");

@@ -1,6 +1,5 @@
-import { logout } from "@/store/slices/authSlice";
 import { store } from "@/store/store";
-import { refreshAccessToken } from "@/store/thunks/authThunk";
+import { refreshAccessToken, logout } from "@/store/thunks/authThunk";
 import axios from "axios";
 
 // Create axios instance
@@ -42,20 +41,4 @@ api.interceptors.response.use(
     }
   },
 );
-
-// createAuthRefreshInterceptor(api, async (failedRequest) => {
-//   if (failedRequest.status !== 401) return Promise.reject();
-
-//   return api
-//     .post("/auth/refresh-token")
-//     .then((res: AxiosResponse) => {
-//       if (res.statusText !== "OK") return Promise.reject(res);
-//       accessToken = res.data.data.accessToken;
-//       return Promise.resolve(res);
-//     })
-//     .catch((err) => {
-//       return Promise.reject(err);
-//     });
-// });
-
 export default api;

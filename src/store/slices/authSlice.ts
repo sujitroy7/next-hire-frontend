@@ -1,5 +1,5 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { login, refreshAccessToken } from "../thunks/authThunk";
+import { createSlice } from "@reduxjs/toolkit";
+import { login, refreshAccessToken, logout } from "../thunks/authThunk";
 
 interface AuthState {
   accessToken: string | null;
@@ -18,17 +18,22 @@ const initialState: AuthState = {
 const authSlice = createSlice({
   name: "auth",
   initialState,
-  reducers: {
-    setAccessToken: (state, action: PayloadAction<string>) => {
-      state.accessToken = action.payload;
-      state.isAuthenticated = true;
-    },
-    logout: (state) => {
-      state.accessToken = null;
-      state.isAuthenticated = false;
-    },
-  },
+  reducers: {},
   extraReducers: (builder) => {
+    builder
+      .addCase(login.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(login.fulfilled, (state, action) => {
+        state.loading = false;
+        state.accessToken = action.payload;
+        state.isAuthenticated = true;
+      })
+      .addCase(login.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      });
+
     builder
       .addCase(refreshAccessToken.pending, (state) => {
         state.loading = true;
@@ -46,21 +51,22 @@ const authSlice = createSlice({
       });
 
     builder
-      .addCase(login.pending, (state) => {
+      .addCase(logout.pending, (state) => {
         state.loading = true;
       })
-      .addCase(login.fulfilled, (state, action) => {
-        console.log(action);
+      .addCase(logout.fulfilled, (state) => {
         state.loading = false;
-        state.accessToken = action.payload;
-        state.isAuthenticated = true;
+        state.accessToken = null;
+        state.isAuthenticated = false;
+        state.error = null;
       })
-      .addCase(login.rejected, (state, action) => {
+      .addCase(logout.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload as string;
+        state.isAuthenticated = true;
+        state.error = action?.payload as string;
       });
   },
 });
 
-export const { setAccessToken, logout } = authSlice.actions;
+export const {} = authSlice.actions;
 export default authSlice.reducer;

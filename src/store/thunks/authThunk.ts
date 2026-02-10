@@ -41,3 +41,17 @@ export const login = createAsyncThunk(
     }
   },
 );
+
+const LOGOUT_API_URL = `${BASE_URL}/auth/logout`;
+
+export const logout = createAsyncThunk(
+  "auth/logout",
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await axios.post(LOGOUT_API_URL);
+      return response.data.status === "success";
+    } catch (error: any) {
+      return rejectWithValue(error.response.data.message || "Logout Failed");
+    }
+  },
+);

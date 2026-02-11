@@ -1,5 +1,3 @@
-import { store } from "@/store/store";
-import { refreshAccessToken, logout } from "@/store/thunks/authThunk";
 import axios from "axios";
 
 // Create axios instance
@@ -9,7 +7,8 @@ const api = axios.create({
 
 // Request Interceptor: Injects the latest token from redux
 api.interceptors.request.use(
-  (config) => {
+  async (config) => {
+    const { store } = await import("@/store/store");
     const accessToken = store.getState().auth.accessToken;
     if (accessToken) {
       config.headers.Authorization = `Bearer ${accessToken}`;
@@ -28,6 +27,9 @@ api.interceptors.response.use(
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
 
+      const { store } = await import("@/store/store");
+      const { refreshAccessToken, logout } =
+        await import("@/store/thunks/authThunk");
       try {
         const newAccessToken = await store
           .dispatch(refreshAccessToken())

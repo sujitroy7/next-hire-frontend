@@ -4,5 +4,6 @@ import { axiosBaseQuery } from "../axiosBaseQuery";
 export const baseApi = createApi({
   reducerPath: "api",
   baseQuery: axiosBaseQuery({ baseUrl: "/api" }),
+  tagTypes: ["CandidateProfile"],
   endpoints: () => ({}),
 });

@@ -29,8 +29,8 @@ export default function LoginPage() {
   const dispatch = useAppDispatch();
   const formik = useFormik({
     initialValues: {
-      email: "organization1@gmail.com",
-      password: "organization",
+      email: "",
+      password: "",
     },
     onSubmit: (values) => {
       console.log(values);
@@ -74,6 +74,7 @@ export default function LoginPage() {
                 id="password"
                 name="password"
                 type="password"
+                placeholder="Enter password"
                 required
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}

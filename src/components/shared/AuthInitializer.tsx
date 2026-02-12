@@ -17,7 +17,7 @@ export default function AuthInitializer({
     const initAuth = async () => {
       try {
         // 1. Try to get a valid access token first
-        await dispatch(refreshAccessToken()).unwrap().then();
+        await dispatch(refreshAccessToken()).unwrap();
         // 2. If successful, manually trigger the RTK Query endpoint
         await dispatch(userApi.endpoints.getMe.initiate()).unwrap();
       } catch (error) {

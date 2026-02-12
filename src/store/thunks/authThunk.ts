@@ -1,31 +1,23 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
+import { clientAxios } from "@/lib/axios";
 
-const BASE_URL = process.env["NEXT_PUBLIC_API_URL"];
-const REFRESH_TOKEN_API_URL = `${BASE_URL}/auth/refresh-token`;
+/**
+ * Auth thunks - work with HTTP-only cookie authentication
+ * Backend sets/clears cookies, thunks only return success/failure for UI state
+ */
 
 export const refreshAccessToken = createAsyncThunk(
   "auth/refreshAccessToken",
   async (_, { rejectWithValue }) => {
     try {
-      const response = await axios.post(
-        REFRESH_TOKEN_API_URL,
-        {},
-        {
-          withCredentials: true,
-          withXSRFToken: true,
-          xsrfHeaderName: "x-csrf-token",
-          xsrfCookieName: "csrf-token",
-        },
-      );
-      return response.data.data.accessToken;
+      // Backend reads refreshToken from cookie and sets new tokens in cookies
+      await clientAxios.post("/auth/refresh-token");
+      return true; // Success - tokens are in cookies
     } catch (error: any) {
-      return rejectWithValue(error.response.data?.message || "Refresh failed");
+      return rejectWithValue(error.response?.data?.message || "Refresh failed");
     }
   },
 );
-
-const LOGIN_API_URL = `${BASE_URL}/auth/login`;
 
 export const login = createAsyncThunk(
   "auth/login",
@@ -34,30 +26,24 @@ export const login = createAsyncThunk(
     { rejectWithValue },
   ) => {
     try {
-      const response = await axios.post(LOGIN_API_URL, credentials, {
-        withCredentials: true,
-      });
-      return response.data.data.accessToken;
+      // Backend sets accessToken and refreshToken in HTTP-only cookies
+      await clientAxios.post("/auth/login", credentials);
+      return true; // Success - tokens are in cookies
     } catch (error: any) {
-      return rejectWithValue(error.response.data?.message || "Login failed");
+      return rejectWithValue(error.response?.data?.message || "Login failed");
     }
   },
 );
-
-const LOGOUT_API_URL = `${BASE_URL}/auth/logout`;
 
 export const logout = createAsyncThunk(
   "auth/logout",
   async (_, { rejectWithValue }) => {
     try {
-      const response = await axios.post(
-        LOGOUT_API_URL,
-        {},
-        { withCredentials: true },
-      );
-      return response.data.status === "success";
+      // Backend clears cookies
+      await clientAxios.post("/auth/logout");
+      return true; // Success
     } catch (error: any) {
-      return rejectWithValue(error.response.data.message || "Logout Failed");
+      return rejectWithValue(error.response?.data?.message || "Logout Failed");
     }
   },
 );

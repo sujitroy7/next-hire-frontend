@@ -5,11 +5,7 @@ import { useAppDispatch } from "@/store/hooks";
 import { refreshAccessToken } from "@/store/thunks/authThunk";
 import { userApi } from "@/store/services/userApi";
 
-export default function AuthInitializer({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function AuthInitializer() {
   const dispatch = useAppDispatch();
   const [isInitialized, setIsInitialized] = useState(false);
 
@@ -29,10 +25,5 @@ export default function AuthInitializer({
 
     if (!isInitialized) initAuth();
   }, [dispatch]);
-
-  if (!isInitialized) {
-    return <div>Loading...</div>;
-  }
-
-  return children;
+  return <></>;
 }

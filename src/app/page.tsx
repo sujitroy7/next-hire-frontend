@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import api from "../lib/axios";
+import { clientAxios } from "../lib/axios";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import {
   login as loginThunkFn,
@@ -27,7 +27,7 @@ export default function Home() {
   }
 
   async function getUsersList() {
-    const response = await api.get("/api/users");
+    const response = await clientAxios.get("/api/users");
     if (response.statusText === "OK") {
       setUsers(response.data.data);
     }

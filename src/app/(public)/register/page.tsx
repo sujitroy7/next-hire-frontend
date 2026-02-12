@@ -22,7 +22,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import api from "@/lib/axios";
+import { clientAxios } from "@/lib/axios";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -35,7 +35,7 @@ export default function RegisterPage() {
     },
     onSubmit: async (values) => {
       try {
-        const response = await api.post("/api/users", values);
+        const response = await clientAxios.post("/api/users", values);
         console.log(response, "test-log");
 
         if (response.status === 201) {

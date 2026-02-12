@@ -1,5 +1,4 @@
 import axios from "axios";
-import { cookies } from "next/headers";
 
 /**
  * Axios instance configured for cookie-based authentication
@@ -58,37 +57,5 @@ clientAxios.interceptors.response.use(
   },
 );
 
-/**
- * Server-side axios instance for SSR
- *
- * - Uses absolute URL (server can't use relative paths)
- * - Manually forwards cookies from incoming request
- * - No withCredentials needed (not in browser)
- */
-const serverAxios = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_BASE_URL + "/api",
-  headers: {
-    "Content-Type": "application/json",
-  },
-});
-
-serverAxios.interceptors.request.use(
-  async (config) => {
-    const cookieStore = await cookies();
-
-    // Build cookie header from Next.js cookie store
-    const cookieHeader = cookieStore
-      .getAll()
-      .map((cookie) => `${cookie.name}=${cookie.value}`)
-      .join("; ");
-
-    if (cookieHeader) {
-      config.headers.Cookie = cookieHeader;
-    }
-
-    return config;
-  },
-  (error) => Promise.reject(error),
-);
-
-export { clientAxios, serverAxios };
+export { clientAxios };
+export default clientAxios; // Default export for backward compatibility

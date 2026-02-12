@@ -27,7 +27,7 @@ export default function Home() {
   }
 
   async function getUsersList() {
-    const response = await clientAxios.get("/api/users");
+    const response = await clientAxios.get("/users");
     if (response.statusText === "OK") {
       setUsers(response.data.data);
     }

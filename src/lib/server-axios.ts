@@ -1,5 +1,6 @@
 import axios from "axios";
 import { cookies } from "next/headers";
+import { envRequired } from "./envRequired";
 
 /**
  * Server-side axios instance for SSR
@@ -10,7 +11,7 @@ import { cookies } from "next/headers";
  * - Only works in Server Components
  */
 const serverAxios = axios.create({
-  baseURL: "http://localhost:3000/api",
+  baseURL: envRequired("NEXT_PUBLIC_API_URL"),
   headers: {
     "Content-Type": "application/json",
   },

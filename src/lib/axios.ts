@@ -1,4 +1,5 @@
 import axios from "axios";
+import { envRequired } from "./envRequired";
 
 /**
  * Axios instance configured for cookie-based authentication
@@ -9,7 +10,7 @@ import axios from "axios";
  * - Automatic token refresh on 401 errors
  */
 const clientAxios = axios.create({
-  baseURL: "/api", // Proxy through Next.js API routes
+  baseURL: envRequired("NEXT_PUBLIC_API_URL", "/api/api"), // Proxy through Next.js API routes
   withCredentials: true, // Send cookies automatically
 });
 

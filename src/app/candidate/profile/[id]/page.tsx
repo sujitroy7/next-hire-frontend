@@ -27,7 +27,7 @@ export default async function CandidateProfilePage({ params }: PageProps) {
   let data;
 
   try {
-    const response = await serverAxios.get(`/api/candidate-profile/${id}`);
+    const response = await serverAxios.get(`/candidate-profile/${id}`);
 
     if (response.status !== 200) {
       notFound();

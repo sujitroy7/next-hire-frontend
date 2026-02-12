@@ -38,7 +38,7 @@ export default function LoginPage() {
         userApi.endpoints.getMe.initiate(),
       ).unwrap();
       const redirectionPath = redirectionPages[response.data.userType];
-      router.push(redirectionPath);
+      router.replace(redirectionPath);
     },
   });
 

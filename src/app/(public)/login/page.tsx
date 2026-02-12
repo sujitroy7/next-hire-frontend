@@ -14,10 +14,10 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { login } from "@/store/thunks/authThunk";
+import { userApi } from "@/store/services/userApi";
 import { useAppDispatch } from "@/store/hooks";
 import { useRouter } from "next/navigation";
-import { AccessTokenPayload, UserRole } from "@/types/auth";
-import { jwtDecode } from "jwt-decode";
+import { UserRole } from "@/types/auth";
 
 const redirectionPages: Record<UserRole, string> = {
   ORGANIZATION: "/org/dashboard",
@@ -32,15 +32,13 @@ export default function LoginPage() {
       email: "",
       password: "",
     },
-    onSubmit: (values) => {
-      console.log(values);
-      dispatch(login(values))
-        .unwrap()
-        .then((token) => {
-          const decoded = jwtDecode<AccessTokenPayload>(token);
-          const redirectionPath = redirectionPages[decoded.userType];
-          router.push(redirectionPath);
-        });
+    onSubmit: async (values) => {
+      await dispatch(login(values)).unwrap();
+      const response = await dispatch(
+        userApi.endpoints.getMe.initiate(),
+      ).unwrap();
+      const redirectionPath = redirectionPages[response.data.userType];
+      router.push(redirectionPath);
     },
   });
 

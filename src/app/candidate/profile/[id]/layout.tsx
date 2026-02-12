@@ -6,5 +6,6 @@ export default async function CandidateLayout({
 }: {
   children: React.ReactNode;
 }) {
+  return children;
   return <RoleGuard role={UserRoleEnum.CANDIDATE}>{children}</RoleGuard>;
 }

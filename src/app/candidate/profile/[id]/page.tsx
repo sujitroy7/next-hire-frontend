@@ -1,11 +1,9 @@
-"use client";
-
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { useGetCandidateProfileQuery } from "@/store/services/candidateApi";
+import { serverAxios } from "@/lib/server-axios";
 import {
   Briefcase,
   Calendar,
@@ -16,28 +14,29 @@ import {
   Phone,
   Pencil,
 } from "lucide-react";
+import { notFound } from "next/navigation";
 
-export default function CandidateProfilePage() {
-  const { data, isLoading, error } = useGetCandidateProfileQuery(
-    "e4f866d8-ab8b-43ea-bcb5-6c3bf7c31050",
-  );
+interface PageProps {
+  params: {
+    id: string;
+  };
+}
 
-  if (isLoading) {
-    return (
-      <div className="flex h-screen items-center justify-center">
-        Loading profile...
-      </div>
-    );
-  }
+export default async function CandidateProfilePage({ params }: PageProps) {
+  const { id } = await params;
+  let data;
 
-  if (error || !data) {
-    return (
-      <div className="container mx-auto py-8">
-        <div className="text-center text-red-500">
-          Failed to load profile. Please try again later.
-        </div>
-      </div>
-    );
+  try {
+    const response = await serverAxios.get(`/api/candidate-profile/${id}`);
+
+    if (response.status !== 200) {
+      notFound();
+    }
+
+    data = response.data.data;
+  } catch (error) {
+    console.error("Failed to fetch candidate profile data", error);
+    notFound();
   }
 
   // Helper function to format dates

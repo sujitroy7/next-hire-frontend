@@ -1,4 +1,8 @@
-import axios from "axios";
+import axios, {
+  AxiosError,
+  AxiosResponse,
+  InternalAxiosRequestConfig,
+} from "axios";
 import { envRequired } from "./envRequired";
 
 /**
@@ -23,12 +27,22 @@ const clientAxios = axios.create({
  * 3. If refresh fails, logout and redirect to login
  */
 clientAxios.interceptors.response.use(
-  (response) => response,
-  async (error) => {
-    const originalRequest = error.config;
+  (response: AxiosResponse) => response,
+  async (error: AxiosError) => {
+    const originalRequest = error.config as InternalAxiosRequestConfig & {
+      _retry: boolean;
+    };
+
+    const isRefreshTokenApi = error.config?.url?.includes(
+      "/auth/refresh-token",
+    );
 
     // Only retry once to avoid infinite loops
-    if (error.response?.status === 401 && !originalRequest._retry) {
+    if (
+      error.response?.status === 401 &&
+      !originalRequest._retry &&
+      !isRefreshTokenApi
+    ) {
       originalRequest._retry = true;
 
       try {

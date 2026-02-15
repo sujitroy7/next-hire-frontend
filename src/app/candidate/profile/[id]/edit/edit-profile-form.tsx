@@ -64,7 +64,7 @@ const profileSchema = z.object({
     .url({ message: "Please enter a valid URL." })
     .optional()
     .or(z.literal("")),
-  isOpenToWork: z.boolean().default(false),
+  isOpenToWork: z.boolean(),
   skills: z.string().optional(), // Comma separated string for simplicity, or we could use array
   experiences: z
     .array(
@@ -73,7 +73,7 @@ const profileSchema = z.object({
         companyName: z.string().min(1, "Company name is required"),
         startDate: z.string().min(1, "Start date is required"),
         endDate: z.string().optional(),
-        isCurrent: z.boolean().default(false),
+        isCurrent: z.boolean(),
         description: z.string().optional(),
       }),
     )
@@ -86,7 +86,7 @@ const profileSchema = z.object({
         fieldOfStudy: z.string().optional(),
         startDate: z.string().min(1, "Start date is required"),
         endDate: z.string().optional(),
-        isCurrent: z.boolean().default(false),
+        isCurrent: z.boolean(),
       }),
     )
     .optional(),
@@ -107,7 +107,7 @@ export default function EditProfileForm({
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Transform initial data to match form schema if necessary
-  const defaultValues: Partial<ProfileFormValues> = {
+  const defaultValues: ProfileFormValues = {
     firstName: initialData?.firstName || "",
     lastName: initialData?.lastName || "",
     headline: initialData?.headline || "",
@@ -117,7 +117,7 @@ export default function EditProfileForm({
     address: initialData?.address || "",
     linkedinUrl: initialData?.linkedinUrl || "",
     websiteUrl: initialData?.websiteUrl || "",
-    isOpenToWork: initialData?.isOpenToWork || false,
+    isOpenToWork: initialData?.isOpenToWork ?? false,
     skills: initialData?.skills ? initialData.skills.join(", ") : "",
     experiences:
       initialData?.experiances?.map((exp: any) => ({
@@ -128,7 +128,7 @@ export default function EditProfileForm({
         endDate: exp.endDate
           ? new Date(exp.endDate).toISOString().split("T")[0]
           : "",
-        isCurrent: !exp.endDate,
+        isCurrent: exp.isCurrent ?? !exp.endDate,
       })) || [],
     educations:
       initialData?.education?.map((edu: any) => ({
@@ -139,12 +139,12 @@ export default function EditProfileForm({
         endDate: edu.endDate
           ? new Date(edu.endDate).toISOString().split("T")[0]
           : "",
-        isCurrent: !edu.endDate,
+        isCurrent: edu.isCurrent ?? !edu.endDate,
       })) || [],
   };
 
   const form = useForm<ProfileFormValues>({
-    resolver: zodResolver(profileSchema),
+    resolver: zodResolver(profileSchema) as any,
     defaultValues,
     mode: "onChange",
   });
@@ -193,8 +193,8 @@ export default function EditProfileForm({
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
       toast.success("Profile updated successfully!");
-      router.push(`/candidate/profile/${candidateId}`);
       router.refresh();
+      router.push(`/candidate/profile/${candidateId}` as any);
     } catch (error) {
       console.error("Error updating profile:", error);
       toast.error("Failed to update profile. Please try again.");
@@ -414,6 +414,7 @@ export default function EditProfileForm({
                   jobTitle: "",
                   companyName: "",
                   startDate: "",
+                  isCurrent: false,
                 })
               }
             >
@@ -559,6 +560,7 @@ export default function EditProfileForm({
                       jobTitle: "",
                       companyName: "",
                       startDate: "",
+                      isCurrent: false,
                     })
                   }
                 >

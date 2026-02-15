@@ -1,18 +1,10 @@
-import { UserType } from "@/types/auth";
-import { jwtVerify } from "jose";
+import { headers } from "next/headers";
+import { cache } from "react";
 
-export async function verifyPermissions(token: string) {
-  try {
-    const secret = new TextEncoder().encode(
-      process.env.NEXT_PUBLIC_PERMISSIONS_SECRET,
-    );
-    const { payload } = await jwtVerify(token, secret);
+export const getSession = cache(async () => {
+  const headersList = await headers();
+  const userId = headersList.get("x-user-id");
+  const userRole = headersList.get("x-user-role");
 
-    return payload as {
-      sub: string;
-      role: UserType;
-    } | null;
-  } catch (error) {
-    return null; // Invalid signature or expired
-  }
-}
+  return { userId, userRole };
+});

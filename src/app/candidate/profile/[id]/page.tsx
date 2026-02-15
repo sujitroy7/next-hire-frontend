@@ -3,6 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import { getSession } from "@/lib/auth";
 import { serverAxios } from "@/lib/server-axios";
 import {
   Briefcase,
@@ -14,6 +15,7 @@ import {
   Phone,
   Pencil,
 } from "lucide-react";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 
 interface PageProps {
@@ -22,34 +24,34 @@ interface PageProps {
   };
 }
 
+// Helper function to format dates
+const formatDate = (date: Date | string | null | undefined) => {
+  if (!date) return "Present";
+  const d = new Date(date);
+  return d.toLocaleDateString("en-US", { month: "short", year: "numeric" });
+};
+
+// Get initials from name
+const getInitials = (firstName: string, lastName: string) => {
+  return `${firstName[0]}${lastName[0]}`.toUpperCase();
+};
+
 export default async function CandidateProfilePage({ params }: PageProps) {
   const { id } = await params;
-  let data;
+  const { userId } = await getSession();
+  const isProfileOwner = userId === id;
 
+  let data;
   try {
     const response = await serverAxios.get(`/candidate-profile/${id}`);
-
     if (response.status !== 200) {
       notFound();
     }
-
     data = response.data.data;
   } catch (error) {
     console.error("Failed to fetch candidate profile data", error);
     notFound();
   }
-
-  // Helper function to format dates
-  const formatDate = (date: Date | string | null | undefined) => {
-    if (!date) return "Present";
-    const d = new Date(date);
-    return d.toLocaleDateString("en-US", { month: "short", year: "numeric" });
-  };
-
-  // Get initials from name
-  const getInitials = (firstName: string, lastName: string) => {
-    return `${firstName[0]}${lastName[0]}`.toUpperCase();
-  };
 
   // Placeholder skills (will need to be added to actual data model later)
   const placeholderSkills = [
@@ -93,12 +95,16 @@ export default async function CandidateProfilePage({ params }: PageProps) {
                   </Badge>
                 )}
 
-                <div className="mt-6 w-full space-y-3">
-                  <Button variant="outline" className="w-full">
-                    <Pencil className="mr-2 h-4 w-4" />
-                    Edit Profile
-                  </Button>
-                </div>
+                {isProfileOwner && (
+                  <div className="mt-6 w-full space-y-3">
+                    <Link href={`${id}/edit`}>
+                      <Button variant="outline" className="w-full">
+                        <Pencil className="mr-2 h-4 w-4" />
+                        Edit Profile
+                      </Button>
+                    </Link>
+                  </div>
+                )}
               </CardContent>
             </Card>
 

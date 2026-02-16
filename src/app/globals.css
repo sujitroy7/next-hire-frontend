@@ -7,7 +7,6 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-
   --radius-sm: calc(var(--radius) - 4px);
 
   --radius-md: calc(var(--radius) - 2px);
@@ -86,7 +85,6 @@
 }
 
 :root {
-
   --radius: 0.625rem;
 
   --background: oklch(1 0 0);
@@ -153,7 +151,6 @@
 }
 
 .dark {
-
   --background: oklch(0.145 0 0);
 
   --foreground: oklch(0.985 0 0);
@@ -223,5 +220,48 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+@layer utilities {
+  .rich-text {
+    @apply text-foreground leading-normal;
+
+    & h1 {
+      @apply text-2xl font-bold mb-3 mt-4 text-foreground;
+    }
+    & h2 {
+      @apply text-xl font-semibold mb-2 mt-3 text-foreground;
+    }
+    & h3 {
+      @apply text-lg font-medium mb-1 mt-2 text-foreground;
+    }
+    & p {
+      @apply mb-3;
+    }
+    & ul {
+      @apply list-disc list-outside ml-5 mb-3;
+    }
+    & ol {
+      @apply list-decimal list-outside ml-5 mb-3;
+    }
+    & li {
+      @apply mb-1;
+      & p {
+        @apply my-0;
+      }
+    }
+    & strong {
+      @apply font-semibold text-foreground;
+    }
+    & em {
+      @apply italic;
+    }
+    & a {
+      @apply text-primary hover:underline underline-offset-4;
+    }
+    & blockquote {
+      @apply border-l-4 border-muted pl-4 italic my-4;
+    }
   }
 }

@@ -202,9 +202,10 @@ export default async function CandidateProfilePage({ params }: PageProps) {
                 <CardTitle>About Me</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="leading-relaxed text-muted-foreground">
-                  {data.bio}
-                </p>
+                <div
+                  className="rich-text"
+                  dangerouslySetInnerHTML={{ __html: data.bio }}
+                />
               </CardContent>
             </Card>
           )}

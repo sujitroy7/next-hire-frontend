@@ -2,7 +2,6 @@
 
 import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -22,7 +21,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   Loader2,
@@ -37,65 +35,15 @@ import {
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner"; // Assuming sonner is used for toasts based on package.json
-
-// --- Zod Schema ---
-const profileSchema = z.object({
-  firstName: z
-    .string()
-    .min(2, { message: "First name must be at least 2 characters." }),
-  lastName: z
-    .string()
-    .min(2, { message: "Last name must be at least 2 characters." }),
-  headline: z.string().optional(),
-  bio: z
-    .string()
-    .max(500, { message: "Bio must not exceed 500 characters." })
-    .optional(),
-  email: z.string().email({ message: "Please enter a valid email address." }),
-  phone: z.string().optional(),
-  address: z.string().optional(),
-  linkedinUrl: z
-    .string()
-    .url({ message: "Please enter a valid URL." })
-    .optional()
-    .or(z.literal("")),
-  websiteUrl: z
-    .string()
-    .url({ message: "Please enter a valid URL." })
-    .optional()
-    .or(z.literal("")),
-  isOpenToWork: z.boolean(),
-  skills: z.string().optional(), // Comma separated string for simplicity, or we could use array
-  experiences: z
-    .array(
-      z.object({
-        jobTitle: z.string().min(1, "Job title is required"),
-        companyName: z.string().min(1, "Company name is required"),
-        startDate: z.string().min(1, "Start date is required"),
-        endDate: z.string().optional(),
-        isCurrent: z.boolean(),
-        description: z.string().optional(),
-      }),
-    )
-    .optional(),
-  educations: z
-    .array(
-      z.object({
-        schoolName: z.string().min(1, "School name is required"),
-        degree: z.string().min(1, "Degree is required"),
-        fieldOfStudy: z.string().optional(),
-        startDate: z.string().min(1, "Start date is required"),
-        endDate: z.string().optional(),
-        isCurrent: z.boolean(),
-      }),
-    )
-    .optional(),
-});
-
-type ProfileFormValues = z.infer<typeof profileSchema>;
+import clientAxios from "@/lib/axios";
+import { RichTextEditor } from "@/components/ui/rich-text-editor";
+import {
+  profileFormSchema,
+  ProfileFormValues,
+} from "./edit-profile-form-schema";
 
 interface EditProfileFormProps {
-  initialData: any; // Using any for flexibility with backend response type
+  initialData: any;
   candidateId: string;
 }
 
@@ -144,7 +92,7 @@ export default function EditProfileForm({
   };
 
   const form = useForm<ProfileFormValues>({
-    resolver: zodResolver(profileSchema) as any,
+    resolver: zodResolver(profileFormSchema) as any,
     defaultValues,
     mode: "onChange",
   });
@@ -182,15 +130,26 @@ export default function EditProfileForm({
         // Ensure dates are compatible with backend
       };
 
-      // In a real app, we would use axios here.
-      // Since this is a client component, we should import a configured axios instance or use fetch.
-      // For now, I'll simulate a request or assume a global axios instance is available/passed.
-      // Using fetch for simplicity in this generated code snippet, matching the user's intent to just "generate the UI".
+      // Submit data to backend
+      const response = await clientAxios.patch(
+        `/candidate-profile/${candidateId}`,
+        {
+          firstName: payload.firstName,
+          lastName: payload.lastName,
+          headline: payload.headline,
+          bio: payload.bio,
+          publicPhone: payload.phone,
+          publicEmail: payload.email,
+          linkedinUrl: payload.linkedinUrl,
+          websiteUrl: payload.websiteUrl,
+          resumeUrl: null,
+          isOpenToWork: payload.isOpenToWork,
+        },
+      );
 
-      console.log("Submitting payload:", payload);
-
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      if (response.status !== 200) {
+        throw new Error("Failed to update profile");
+      }
 
       toast.success("Profile updated successfully!");
       router.refresh();
@@ -273,14 +232,14 @@ export default function EditProfileForm({
                   <FormItem>
                     <FormLabel>About You</FormLabel>
                     <FormControl>
-                      <Textarea
-                        placeholder="Tell recruiters about your background, passion, and what you're looking for..."
-                        className="min-h-[120px] resize-y"
-                        {...field}
+                      <RichTextEditor
+                        value={field.value || ""}
+                        onChange={({ htmlValue }) => field.onChange(htmlValue)}
                       />
                     </FormControl>
                     <FormDescription className="flex justify-end">
-                      {field.value?.length || 0}/500
+                      {/* Strip HTML tags to accurately count text characters */}
+                      {field.value?.replace(/<[^>]*>?/gm, "").length || 0}/500
                     </FormDescription>
                     <FormMessage />
                   </FormItem>

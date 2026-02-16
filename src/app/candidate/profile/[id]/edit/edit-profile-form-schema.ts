@@ -3,15 +3,12 @@ import z from "zod";
 const stripHtml = (value?: string) => value?.replace(/<[^>]*>?/gm, "") ?? "";
 
 export const profileFormSchema = z.object({
-  firstName: z
-    .string()
-    .min(2, { message: "First name must be at least 2 characters." }),
-  lastName: z
-    .string()
-    .min(2, { message: "Last name must be at least 2 characters." }),
-  headline: z.string().optional(),
+  firstName: z.string().min(1, { message: "First name is required." }),
+  lastName: z.string().min(1, { message: "Last name is required." }),
+  headline: z.string().nullable().optional(),
   bio: z
     .string()
+    .nullable()
     .optional()
     .refine(
       (value) => {
@@ -21,30 +18,39 @@ export const profileFormSchema = z.object({
       },
       { message: "Bio must be at most 500 characters" },
     ),
-  email: z.string().email({ message: "Please enter a valid email address." }),
-  phone: z.string().optional(),
-  address: z.string().optional(),
+  publicEmail: z
+    .string()
+    .email({ message: "Please enter a valid email address." })
+    .nullable()
+    .optional()
+    .or(z.literal("")),
+  publicPhone: z.string().nullable().optional(),
+  address: z.string().optional(), // Kept for frontend state, might not be in backend schema snippet but good to have
   linkedinUrl: z
     .string()
     .url({ message: "Please enter a valid URL." })
+    .nullable()
     .optional()
     .or(z.literal("")),
   websiteUrl: z
     .string()
     .url({ message: "Please enter a valid URL." })
+    .nullable()
     .optional()
     .or(z.literal("")),
-  isOpenToWork: z.boolean(),
-  skills: z.string().optional(), // Comma separated string for simplicity, or we could use array
+  isOpenToWork: z.boolean().optional(),
+  skills: z.string().optional(),
   experiences: z
     .array(
       z.object({
-        jobTitle: z.string().min(1, "Job title is required"),
-        companyName: z.string().min(1, "Company name is required"),
+        id: z.string().optional(),
+        jobTitle: z.string().min(1, "Job title is required"), // Maps to 'role'
+        companyName: z.string().min(1, "Company name is required"), // Maps to 'company'
         startDate: z.string().min(1, "Start date is required"),
-        endDate: z.string().optional(),
-        isCurrent: z.boolean(),
-        description: z.string().optional(),
+        endDate: z.string().nullable().optional(),
+        isCurrent: z.boolean().optional(),
+        description: z.string().nullable().optional(),
+        location: z.string().nullable().optional(),
       }),
     )
     .optional(),

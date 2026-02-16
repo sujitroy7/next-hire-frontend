@@ -2,7 +2,7 @@ import { CandidateExperiance, CandidateProfile } from "@/types/candidate";
 import { baseApi } from "./baseApi";
 
 interface CandidateProfileData extends CandidateProfile {
-  experiances: CandidateExperiance[];
+  experiences: CandidateExperiance[];
   education: [];
 }
 

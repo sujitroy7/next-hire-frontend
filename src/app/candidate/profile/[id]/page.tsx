@@ -211,14 +211,14 @@ export default async function CandidateProfilePage({ params }: PageProps) {
           )}
 
           {/* Experience */}
-          {data.experiances && data.experiances.length > 0 && (
+          {data.experiences && data.experiences.length > 0 && (
             <Card>
               <CardHeader>
                 <CardTitle>Experience</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-8">
-                  {data.experiances.map((job, index) => (
+                  {data.experiences.map((job, index) => (
                     <div key={index} className="relative pl-2">
                       {/* Standard Timeline Item */}
                       <div className="flex flex-col gap-4 sm:flex-row sm:items-start">
@@ -261,7 +261,7 @@ export default async function CandidateProfilePage({ params }: PageProps) {
                           )}
                         </div>
                       </div>
-                      {index < data.experiances.length - 1 && (
+                      {index < data.experiences.length - 1 && (
                         <Separator className="my-6" />
                       )}
                     </div>

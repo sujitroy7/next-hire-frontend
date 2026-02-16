@@ -60,16 +60,18 @@ export default function EditProfileForm({
     lastName: initialData?.lastName || "",
     headline: initialData?.headline || "",
     bio: initialData?.bio || "",
-    email: initialData?.publicEmail || initialData?.email || "", // Fallback to account email
-    phone: initialData?.publicPhone || "",
+    publicEmail: initialData?.publicEmail || initialData?.email || "",
+    publicPhone: initialData?.publicPhone || "",
     address: initialData?.address || "",
     linkedinUrl: initialData?.linkedinUrl || "",
     websiteUrl: initialData?.websiteUrl || "",
     isOpenToWork: initialData?.isOpenToWork ?? false,
     skills: initialData?.skills ? initialData.skills.join(", ") : "",
     experiences:
-      initialData?.experiances?.map((exp: any) => ({
-        ...exp,
+      initialData?.experiences?.map((exp: any) => ({
+        id: exp.id,
+        jobTitle: exp.jobTitle || "",
+        companyName: exp.companyName || "",
         startDate: exp.startDate
           ? new Date(exp.startDate).toISOString().split("T")[0]
           : "", // Format for date input
@@ -77,10 +79,14 @@ export default function EditProfileForm({
           ? new Date(exp.endDate).toISOString().split("T")[0]
           : "",
         isCurrent: exp.isCurrent ?? !exp.endDate,
+        description: exp.description || "",
+        location: exp.location || "",
       })) || [],
     educations:
       initialData?.education?.map((edu: any) => ({
         ...edu,
+        schoolName: edu.schoolName || "",
+        degree: edu.degree || "",
         startDate: edu.startDate
           ? new Date(edu.startDate).toISOString().split("T")[0]
           : "",
@@ -120,31 +126,38 @@ export default function EditProfileForm({
     try {
       // Prepare data for API (e.g., convert skills string to array)
       const payload = {
-        ...data,
+        firstName: data.firstName,
+        lastName: data.lastName,
+        headline: data.headline,
+        bio: data.bio,
+        publicPhone: data.publicPhone,
+        publicEmail: data.publicEmail,
+        linkedinUrl: data.linkedinUrl,
+        websiteUrl: data.websiteUrl,
+        isOpenToWork: data.isOpenToWork,
         skills: data.skills
           ? data.skills
               .split(",")
               .map((s) => s.trim())
               .filter(Boolean)
           : [],
-        // Ensure dates are compatible with backend
+        experiences: data.experiences?.map((exp) => ({
+          id: exp.id,
+          jobTitle: exp.jobTitle,
+          companyName: exp.companyName,
+          employmentType: "FULL_TIME", // Defaulting as specific type wasn't in form, can add if needed
+          startDate: new Date(exp.startDate).toISOString(),
+          endDate: exp.endDate ? new Date(exp.endDate).toISOString() : null,
+          description: exp.description,
+          location: exp.location,
+        })),
+        // educations: ... (if needed by backend, otherwise similar mapping)
       };
 
       // Submit data to backend
       const response = await clientAxios.patch(
         `/candidate-profile/${candidateId}`,
-        {
-          firstName: payload.firstName,
-          lastName: payload.lastName,
-          headline: payload.headline,
-          bio: payload.bio,
-          publicPhone: payload.phone,
-          publicEmail: payload.email,
-          linkedinUrl: payload.linkedinUrl,
-          websiteUrl: payload.websiteUrl,
-          resumeUrl: null,
-          isOpenToWork: payload.isOpenToWork,
-        },
+        payload,
       );
 
       if (response.status !== 200) {
@@ -214,6 +227,7 @@ export default function EditProfileForm({
                       <Input
                         placeholder="e.g. Senior Frontend Engineer | React & TypeScript Enthusiast"
                         {...field}
+                        value={field.value || ""}
                       />
                     </FormControl>
                     <FormDescription>
@@ -261,12 +275,16 @@ export default function EditProfileForm({
           <CardContent className="grid gap-6 md:grid-cols-2">
             <FormField
               control={form.control}
-              name="email"
+              name="publicEmail"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Email</FormLabel>
                   <FormControl>
-                    <Input placeholder="e.g. jane.doe@example.com" {...field} />
+                    <Input
+                      placeholder="e.g. jane.doe@example.com"
+                      {...field}
+                      value={field.value || ""}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -274,12 +292,16 @@ export default function EditProfileForm({
             />
             <FormField
               control={form.control}
-              name="phone"
+              name="publicPhone"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Phone Number</FormLabel>
                   <FormControl>
-                    <Input placeholder="e.g. +1 (555) 000-0000" {...field} />
+                    <Input
+                      placeholder="e.g. +1 (555) 000-0000"
+                      {...field}
+                      value={field.value || ""}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -295,6 +317,7 @@ export default function EditProfileForm({
                     <Input
                       placeholder="e.g. https://linkedin.com/in/janedoe"
                       {...field}
+                      value={field.value || ""}
                     />
                   </FormControl>
                   <FormMessage />
@@ -308,7 +331,11 @@ export default function EditProfileForm({
                 <FormItem>
                   <FormLabel>Portfolio / Website</FormLabel>
                   <FormControl>
-                    <Input placeholder="e.g. https://janedoe.dev" {...field} />
+                    <Input
+                      placeholder="e.g. https://janedoe.dev"
+                      {...field}
+                      value={field.value || ""}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -374,6 +401,8 @@ export default function EditProfileForm({
                   companyName: "",
                   startDate: "",
                   isCurrent: false,
+                  location: "",
+                  description: "",
                 })
               }
             >
@@ -442,7 +471,11 @@ export default function EditProfileForm({
                           Start Date <span className="text-destructive">*</span>
                         </FormLabel>
                         <FormControl>
-                          <Input type="date" {...field} />
+                          <Input
+                            type="date"
+                            {...field}
+                            value={field.value || ""}
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -458,6 +491,7 @@ export default function EditProfileForm({
                           <Input
                             type="date"
                             {...field}
+                            value={field.value || ""}
                             disabled={form.watch(
                               `experiences.${index}.isCurrent`,
                             )}
@@ -467,6 +501,25 @@ export default function EditProfileForm({
                       </FormItem>
                     )}
                   />
+                  <div className="md:col-span-2">
+                    <FormField
+                      control={form.control}
+                      name={`experiences.${index}.location`}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Location</FormLabel>
+                          <FormControl>
+                            <Input
+                              placeholder="e.g. Remote, NY"
+                              {...field}
+                              value={field.value || ""}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
                   <div className="md:col-span-2">
                     <FormField
                       control={form.control}
@@ -498,6 +551,7 @@ export default function EditProfileForm({
                               placeholder="Describe your responsibilities and achievements..."
                               className="min-h-[100px]"
                               {...field}
+                              value={field.value || ""}
                             />
                           </FormControl>
                           <FormMessage />
@@ -520,6 +574,8 @@ export default function EditProfileForm({
                       companyName: "",
                       startDate: "",
                       isCurrent: false,
+                      location: "",
+                      description: "",
                     })
                   }
                 >

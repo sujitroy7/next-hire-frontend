@@ -1,6 +1,6 @@
 import { serverAxios } from "@/lib/server-axios";
 import { notFound } from "next/navigation";
-import EditProfileForm from "./edit-profile-form";
+import EditProfileForm from "./_components/edit-profile-form";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {

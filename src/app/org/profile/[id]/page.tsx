@@ -3,6 +3,9 @@ import ContactInfoSidebar from "./_components/contact-info-sidebar";
 import Header from "./_components/header";
 import OrgGallery from "./_components/gallery";
 import { getSession } from "@/lib/auth";
+import { getOrganizationProfileById } from "@/services/organizationApi";
+import { serverAxios } from "@/lib/server-axios";
+import { notFound, redirect } from "next/navigation";
 
 // Mock Data based on the provided Prisma schema
 const mockOrgProfile = {
@@ -42,6 +45,22 @@ export default async function OrganizationProfilePage({
   const { id: profileId } = await params;
   const { userId } = await getSession();
   const isProfileOwner = userId === profileId;
+
+  let data;
+  try {
+    const respnse = await getOrganizationProfileById(serverAxios, profileId);
+    if (respnse.data.success) {
+      data = respnse.data.data;
+      console.log(data, "test-log org profile data");
+    }
+  } catch (error) {
+    console.log(error);
+    if (isProfileOwner) {
+      redirect(`/org/profile/${userId}/edit`);
+    } else {
+      notFound();
+    }
+  }
 
   return (
     <div className="min-h-screen bg-background text-foreground py-12 px-4 sm:px-6 lg:px-8">

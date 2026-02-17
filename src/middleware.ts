@@ -10,6 +10,7 @@ const publicRoutes = [
   /^\/login$/, // Login
   /^\/register$/, // Register
   /^\/candidate\/profile\/[^/]+$/, // Matches /candidate/profile/123, but NOT /candidate/profile/123/edit
+  /^\/org\/profile\/[^/]+$/, // Matches /org/profile/123, but NOT /org/profile/123/edit
 ];
 
 export async function middleware(request: NextRequest) {

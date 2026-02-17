@@ -2,6 +2,7 @@ import AboutUs from "./_components/about-us";
 import ContactInfoSidebar from "./_components/contact-info-sidebar";
 import Header from "./_components/header";
 import OrgGallery from "./_components/gallery";
+import { getSession } from "@/lib/auth";
 
 // Mock Data based on the provided Prisma schema
 const mockOrgProfile = {
@@ -33,12 +34,22 @@ const mockOrgProfile = {
   ],
 };
 
-export default function OrganizationProfilePage() {
+export default async function OrganizationProfilePage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id: profileId } = await params;
+  const { userId } = await getSession();
+  const isProfileOwner = userId === profileId;
+
   return (
     <div className="min-h-screen bg-background text-foreground py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-5xl mx-auto space-y-8">
         {/* Header Section */}
         <Header
+          profileId={profileId}
+          isProfileOwner={isProfileOwner}
           name={mockOrgProfile.name}
           isVerified={mockOrgProfile.isVerified}
           organizationType={mockOrgProfile.organizationType}

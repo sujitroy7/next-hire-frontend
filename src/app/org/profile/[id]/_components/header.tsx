@@ -1,9 +1,11 @@
 import { MapPin, CheckCircle, Building2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import EditProfile from "./edit-profile";
 
 interface Props {
+  profileId: string;
+  isProfileOwner: boolean;
   name: string;
   isVerified: boolean;
   organizationType?: {
@@ -12,7 +14,9 @@ interface Props {
   location?: string;
 }
 
-export default function Header({
+export default async function Header({
+  profileId,
+  isProfileOwner,
   name,
   isVerified,
   organizationType,
@@ -56,10 +60,7 @@ export default function Header({
           </div>
         </div>
       </div>
-      <div className="flex justify-end pt-4 pr-4">
-        {/* Visual only button as requested */}
-        <Button>Edit Profile</Button>
-      </div>
+      <EditProfile id={profileId} />
     </div>
   );
 }

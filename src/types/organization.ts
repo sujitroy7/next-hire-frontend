@@ -35,18 +35,19 @@ export interface OrganizationProfile {
   id: string;
   userId: string;
   name: string;
-  about: string;
+  about?: string;
   isActive: boolean;
   isVerified: boolean;
-  organizationTypeId?: OrganizationType;
+  organizationType?: OrganizationType;
+  employeeCount?: EmployeeCountType;
   logoUrl?: string;
-  employeeCount: EmployeeCountType;
   galleryImages?: string[];
   websiteUrl?: string;
   linkedinUrl?: string;
   publicEmail?: string;
   publicPhone?: string;
+  address?: Address;
+
   createdAt: string;
   updatedAt: string;
-  address?: Address;
 }

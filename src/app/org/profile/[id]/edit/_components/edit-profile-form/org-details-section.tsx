@@ -89,20 +89,6 @@ export function OrgDetailsSection({ control }: OrgDetailsSectionProps) {
             </FormItem>
           )}
         />
-
-        <FormField
-          control={control}
-          name="location"
-          render={({ field }) => (
-            <FormItem className="sm:col-span-2">
-              <FormLabel>Headquarters Location</FormLabel>
-              <FormControl>
-                <Input placeholder="San Francisco, CA" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
       </CardContent>
     </Card>
   );

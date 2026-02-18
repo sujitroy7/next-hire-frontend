@@ -1,3 +1,4 @@
+import { addressSchema } from "@/components/shared/address-form-section/schema";
 import * as z from "zod";
 
 export const formSchema = z.object({
@@ -29,9 +30,7 @@ export const formSchema = z.object({
     .optional()
     .or(z.literal("")),
   publicPhone: z.string().optional(),
-  location: z.string().min(2, {
-    message: "Location must be at least 2 characters.",
-  }),
+  address: addressSchema,
 });
 
 export type EditOrgProfileValues = z.infer<typeof formSchema>;

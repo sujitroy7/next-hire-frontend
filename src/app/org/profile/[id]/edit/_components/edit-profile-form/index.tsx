@@ -10,6 +10,7 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { BasicInfoSection } from "./basic-info-section";
 import { OrgDetailsSection } from "./org-details-section";
+import AddressFormSection from "@/components/shared/address-form-section";
 import { ContactInfoSection } from "./contact-info-section";
 import { formSchema, EditOrgProfileValues } from "./schema";
 
@@ -45,6 +46,10 @@ export default function EditOrgProfileForm({
         <div className="grid gap-8">
           <BasicInfoSection control={form.control} />
           <OrgDetailsSection control={form.control} />
+          <AddressFormSection<EditOrgProfileValues>
+            control={form.control}
+            name="address"
+          />
           <ContactInfoSection control={form.control} />
 
           <div className="flex justify-end gap-4">

@@ -13,7 +13,10 @@ export async function getOrganizationProfileById(
 
 export async function createOrganizationProfile(
   axios: AxiosInstance,
-  data: Omit<OrganizationProfile, "id">,
+  data: Omit<
+    OrganizationProfile,
+    "id" | "createdAt" | "updatedAt" | "isVerified" | "isActive"
+  >,
 ) {
   return axios.post<ApiResponse<OrganizationProfile>>(
     `/organization-profile`,
@@ -23,7 +26,13 @@ export async function createOrganizationProfile(
 
 export async function updateOrganizationProfile(
   axios: AxiosInstance,
-  { userId, ...data }: Omit<OrganizationProfile, "id">,
+  {
+    userId,
+    ...data
+  }: Omit<
+    OrganizationProfile,
+    "id" | "createdAt" | "updatedAt" | "isVerified" | "isActive"
+  >,
 ) {
   return axios.patch<ApiResponse<OrganizationProfile>>(
     `/organization-profile/${userId}`,

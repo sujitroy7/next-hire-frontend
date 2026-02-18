@@ -12,14 +12,23 @@ import { BasicInfoSection } from "./basic-info-section";
 import { OrgDetailsSection } from "./org-details-section";
 import AddressFormSection from "@/components/shared/address-form-section";
 import { ContactInfoSection } from "./contact-info-section";
-import { formSchema, EditOrgProfileValues } from "./schema";
+import { formSchema, EditOrgProfileValues } from "../../_utils/schema";
+import {
+  createOrganizationProfile,
+  updateOrganizationProfile,
+} from "@/services/organizationApi";
+import clientAxios from "@/lib/axios";
 
 interface EditOrgProfileFormProps {
-  initialData: EditOrgProfileValues;
+  initialData: EditOrgProfileValues | undefined;
+  isNewProfile: boolean;
+  userId: string;
 }
 
 export default function EditOrgProfileForm({
   initialData,
+  isNewProfile,
+  userId,
 }: EditOrgProfileFormProps) {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
@@ -31,13 +40,26 @@ export default function EditOrgProfileForm({
 
   async function onSubmit(values: EditOrgProfileValues) {
     setIsLoading(true);
-    // Simulate API call
-    setTimeout(() => {
-      console.log("Form submitted:", values);
-      toast.success("Profile updated successfully!");
+
+    try {
+      const data = { userId, ...values };
+      if (isNewProfile) {
+        const response = await createOrganizationProfile(clientAxios, data);
+        if (response.status === 201) {
+          toast.success("Profile created successfully!");
+          router.push(`/org/profile/${userId}` as any);
+        }
+      } else {
+        const response = await updateOrganizationProfile(clientAxios, data);
+        if (response.status === 200) {
+          toast.success("Profile updated successfully!");
+          router.push(`/org/profile/${userId}` as any);
+        }
+      }
+    } catch {
+    } finally {
       setIsLoading(false);
-      router.refresh(); // In a real app, you might redirect or refresh
-    }, 1000);
+    }
   }
 
   return (

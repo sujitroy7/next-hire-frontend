@@ -4,33 +4,13 @@ import { getSession } from "@/lib/auth";
 import { serverAxios } from "@/lib/server-axios";
 import { getOrganizationProfileById } from "@/services/organizationApi";
 import { redirect } from "next/navigation";
-import { EditOrgProfileValues } from "./_utils/schema";
+import { formSchema } from "./_utils/schema";
 import { isAxiosError } from "axios";
 
 export const metadata: Metadata = {
   title: "Edit Organization Profile | NextHire",
   description: "Update your organization's profile information.",
 };
-
-// const mockOrgProfile = {
-//   name: "Acme Innovations Ltd.",
-//   about:
-//     "Acme Innovations is a forward-thinking technology company dedicated to solving the world's most complex problems through cutting-edge software solutions. We believe in innovation, integrity, and inclusivity. Our team is composed of passionate individuals who thrive on challenges and continuous learning. We are currently expanding our horizons into AI and machine learning sectors.",
-//   organizationType: "Technology",
-//   employeeCount: "51-200",
-//   address: {
-//     addressLine1: "123 Tech Avenue",
-//     addressLine2: "Suite 400",
-//     city: "San Francisco",
-//     state: "CA",
-//     zipCode: "94105",
-//     country: "United States",
-//   },
-//   websiteUrl: "https://www.acme.inc",
-//   linkedinUrl: "https://linkedin.com/company/acme-inc",
-//   publicEmail: "contact@acme.inc",
-//   publicPhone: "+1 (555) 123-4567",
-// };
 
 interface Props {
   params: Promise<{ id: string }>;
@@ -70,21 +50,7 @@ export default async function EditOrganizationProfilePage({ params }: Props) {
           </p>
         </div>
         <EditOrgProfileForm
-          initialData={
-            !data
-              ? undefined
-              : {
-                  name: data.name,
-                  about: data.about,
-                  organizationType: data.organizationType,
-                  employeeCount: data.employeeCount,
-                  websiteUrl: data.websiteUrl,
-                  linkedinUrl: data.linkedinUrl,
-                  publicEmail: data.publicEmail,
-                  publicPhone: data.publicPhone,
-                  address: data.address,
-                }
-          }
+          initialData={formSchema.parse(data)}
           isNewProfile={status === 404}
           userId={userId}
         />

@@ -23,7 +23,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { EditOrgProfileValues } from "./schema";
+import { EditOrgProfileValues } from "../../_utils/schema";
 
 interface OrgDetailsSectionProps {
   control: Control<EditOrgProfileValues>;
@@ -52,12 +52,15 @@ export function OrgDetailsSection({ control }: OrgDetailsSectionProps) {
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  <SelectItem value="Technology">Technology</SelectItem>
-                  <SelectItem value="Finance">Finance</SelectItem>
-                  <SelectItem value="Healthcare">Healthcare</SelectItem>
-                  <SelectItem value="Education">Education</SelectItem>
-                  <SelectItem value="Retail">Retail</SelectItem>
-                  <SelectItem value="Other">Other</SelectItem>
+                  <SelectItem value="TECHNOLOGY">Technology</SelectItem>
+                  <SelectItem value="FINANCE">Finance</SelectItem>
+                  <SelectItem value="HEALTHCARE">Healthcare</SelectItem>
+                  <SelectItem value="EDUCATION">Education</SelectItem>
+                  <SelectItem value="RETAIL">Retail</SelectItem>
+                  <SelectItem value="MANUFACTURING">Manufacturing</SelectItem>
+                  <SelectItem value="GOVERNMENT">Government</SelectItem>
+                  <SelectItem value="NON_PROFIT">Non Profit</SelectItem>
+                  <SelectItem value="OTHER">Other</SelectItem>
                 </SelectContent>
               </Select>
               <FormMessage />
@@ -78,11 +81,13 @@ export function OrgDetailsSection({ control }: OrgDetailsSectionProps) {
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  <SelectItem value="1-10">1-10 employees</SelectItem>
-                  <SelectItem value="11-50">11-50 employees</SelectItem>
-                  <SelectItem value="51-200">51-200 employees</SelectItem>
-                  <SelectItem value="201-500">201-500 employees</SelectItem>
-                  <SelectItem value="500+">500+ employees</SelectItem>
+                  <SelectItem value="RANGE_1_10">1-10 employees</SelectItem>
+                  <SelectItem value="RANGE_11_50">11-50 employees</SelectItem>
+                  <SelectItem value="RANGE_51_200">51-200 employees</SelectItem>
+                  <SelectItem value="RANGE_201_500">
+                    201-500 employees
+                  </SelectItem>
+                  <SelectItem value="RANGE_501_PLUS">500+ employees</SelectItem>
                 </SelectContent>
               </Select>
               <FormMessage />

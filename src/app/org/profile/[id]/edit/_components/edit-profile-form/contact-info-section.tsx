@@ -16,7 +16,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { EditOrgProfileValues } from "./schema";
+import { EditOrgProfileValues } from "../../_utils/schema";
 
 interface ContactInfoSectionProps {
   control: Control<EditOrgProfileValues>;

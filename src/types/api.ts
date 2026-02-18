@@ -7,3 +7,5 @@ export type FailedResponse = {
   status: "error";
   message: string;
 };
+
+export type ApiResponse<T> = SuccessResponse<T> | FailedResponse;

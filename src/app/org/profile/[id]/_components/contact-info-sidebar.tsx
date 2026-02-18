@@ -1,5 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import { toCompanySizeRange } from "@/lib/common";
 import { Calendar, Globe, Linkedin, Mail, Phone, Users } from "lucide-react";
 
 interface Props {
@@ -7,7 +8,7 @@ interface Props {
   linkedinUrl?: string;
   publicEmail?: string;
   publicPhone?: string;
-  createdAt: Date;
+  createdAt: string;
   employeeCount: string;
 }
 
@@ -102,7 +103,7 @@ export default function ContactInfoSidebar({
                 Joined
               </span>
               <span className="text-sm text-foreground">
-                {createdAt.toLocaleDateString("en-US", {
+                {new Date(createdAt).toLocaleDateString("en-US", {
                   month: "long",
                   year: "numeric",
                 })}
@@ -117,7 +118,7 @@ export default function ContactInfoSidebar({
                 Company Size
               </span>
               <span className="text-sm text-foreground">
-                {employeeCount} Employees
+                {toCompanySizeRange(employeeCount)} Employees
               </span>
             </div>
           </div>

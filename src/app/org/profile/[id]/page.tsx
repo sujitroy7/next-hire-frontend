@@ -6,6 +6,8 @@ import { getSession } from "@/lib/auth";
 import { getOrganizationProfileById } from "@/services/organizationApi";
 import { serverAxios } from "@/lib/server-axios";
 import { notFound, redirect } from "next/navigation";
+import { isAxiosError } from "axios";
+import { OrganizationType } from "@/types/organization";
 
 // Mock Data based on the provided Prisma schema
 const mockOrgProfile = {
@@ -48,18 +50,25 @@ export default async function OrganizationProfilePage({
 
   let data;
   try {
-    const respnse = await getOrganizationProfileById(serverAxios, profileId);
-    if (respnse.data.success) {
-      data = respnse.data.data;
-      console.log(data, "test-log org profile data");
-    }
-  } catch (error) {
-    console.log(error);
-    if (isProfileOwner) {
-      redirect(`/org/profile/${userId}/edit`);
-    } else {
+    const response = await getOrganizationProfileById(serverAxios, profileId);
+    if (response.data.status !== "success") {
       notFound();
     }
+
+    data = response.data.data;
+  } catch (error) {
+    console.log(error);
+    if (isAxiosError(error)) {
+      const status = error.response?.status;
+      if (status === 404) {
+        notFound();
+      }
+      if (status === 401) {
+        redirect("/unauthorized" as any);
+      }
+      throw new Error("Server error. Please try again later.");
+    }
+    throw error;
   }
 
   return (
@@ -69,25 +78,29 @@ export default async function OrganizationProfilePage({
         <Header
           profileId={profileId}
           isProfileOwner={isProfileOwner}
-          name={mockOrgProfile.name}
-          isVerified={mockOrgProfile.isVerified}
-          organizationType={mockOrgProfile.organizationType}
-          location={mockOrgProfile.location}
+          name={data?.name}
+          isVerified={data?.isVerified || false}
+          organizationType={data?.organizationType as OrganizationType}
+          location={
+            data?.address
+              ? [data?.address?.city, data?.address?.country].join(", ")
+              : ""
+          }
         />
         <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Main Content - Left Column */}
           <div className="md:col-span-2 space-y-6">
-            <AboutUs about={mockOrgProfile.about} />
-            <OrgGallery images={mockOrgProfile.galleryImages} />
+            <AboutUs about={data.about || ""} />
+            <OrgGallery images={data.galleryImages || []} />
           </div>
           {/* Sidebar - Right Column */}
           <ContactInfoSidebar
-            websiteUrl={mockOrgProfile.websiteUrl}
-            linkedinUrl={mockOrgProfile.linkedinUrl}
-            publicEmail={mockOrgProfile.publicEmail}
-            publicPhone={mockOrgProfile.publicPhone}
-            createdAt={mockOrgProfile.createdAt}
-            employeeCount={mockOrgProfile.employeeCount}
+            websiteUrl={data.websiteUrl}
+            linkedinUrl={data.linkedinUrl}
+            publicEmail={data.publicEmail}
+            publicPhone={data.publicPhone}
+            createdAt={data?.createdAt}
+            employeeCount={data.employeeCount || ""}
           />
         </div>
       </div>

@@ -2,15 +2,15 @@ import { MapPin, CheckCircle, Building2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import EditProfile from "./edit-profile";
+import { OrganizationType } from "@/types/organization";
+import { toTitleCase } from "@/lib/common";
 
 interface Props {
   profileId: string;
   isProfileOwner: boolean;
   name: string;
   isVerified: boolean;
-  organizationType?: {
-    name: string;
-  };
+  organizationType?: OrganizationType;
   location?: string;
 }
 
@@ -49,7 +49,7 @@ export default async function Header({
           <div className="flex items-center text-muted-foreground text-sm gap-4">
             <div className="flex items-center gap-1">
               <Building2 className="h-4 w-4" />
-              <span>{organizationType?.name || "Organization"}</span>
+              <span>{toTitleCase(organizationType || "Organization")}</span>
             </div>
             {location && (
               <div className="flex items-center gap-1">

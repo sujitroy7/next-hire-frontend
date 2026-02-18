@@ -3,13 +3,13 @@
 import { Control } from "react-hook-form";
 import {
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import {
   Card,
   CardContent,
@@ -17,6 +17,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { RichTextEditor } from "@/components/ui/rich-text-editor";
 import { EditOrgProfileValues } from "../../_utils/schema";
 
 interface BasicInfoSectionProps {
@@ -53,12 +54,15 @@ export function BasicInfoSection({ control }: BasicInfoSectionProps) {
             <FormItem>
               <FormLabel>About</FormLabel>
               <FormControl>
-                <Textarea
-                  placeholder="Tell us about your organization..."
-                  className="min-h-[120px]"
-                  {...field}
+                <RichTextEditor
+                  value={field.value || ""}
+                  onChange={({ htmlValue }) => field.onChange(htmlValue)}
                 />
               </FormControl>
+              <FormDescription className="flex justify-end">
+                {/* Strip HTML tags to accurately count text characters */}
+                {field.value?.replace(/<[^>]*>?/gm, "").length || 0}/500
+              </FormDescription>
               <FormMessage />
             </FormItem>
           )}

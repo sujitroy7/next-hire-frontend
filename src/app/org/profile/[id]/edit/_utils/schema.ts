@@ -6,9 +6,12 @@ export const formSchema = z.object({
   name: z.string().min(2, {
     message: "Organization name must be at least 2 characters.",
   }),
-  about: z.string().min(10, {
-    message: "About description must be at least 10 characters.",
-  }),
+  about: z
+    .string()
+    .refine((val) => (val?.replace(/<[^>]*>?/gm, "").length || 0) <= 500, {
+      message: "About must be 500 characters or less.",
+    })
+    .optional(),
   organizationType: z
     .nativeEnum(OrganizationTypeEnum, "Select valid organization type")
     .optional(),

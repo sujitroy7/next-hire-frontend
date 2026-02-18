@@ -13,7 +13,10 @@ export default function AboutUs({ about }: Props) {
         </CardHeader>
         <CardContent>
           <p className="text-muted-foreground leading-relaxed whitespace-pre-wrap">
-            {about}
+            <div
+              className="rich-text"
+              dangerouslySetInnerHTML={{ __html: about }}
+            />
           </p>
         </CardContent>
       </Card>

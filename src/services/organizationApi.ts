@@ -1,8 +1,32 @@
+import { ApiResponse } from "@/types/api";
+import { OrganizationProfile } from "@/types/organization";
 import { AxiosInstance } from "axios";
 
 export async function getOrganizationProfileById(
   axios: AxiosInstance,
-  id: string,
+  userId: string,
 ) {
-  return axios.get(`/organization-profile/${id}`);
+  return axios.get<ApiResponse<OrganizationProfile>>(
+    `/organization-profile/${userId}`,
+  );
+}
+
+export async function createOrganizationProfile(
+  axios: AxiosInstance,
+  data: Omit<OrganizationProfile, "id">,
+) {
+  return axios.post<ApiResponse<OrganizationProfile>>(
+    `/organization-profile`,
+    data,
+  );
+}
+
+export async function updateOrganizationProfile(
+  axios: AxiosInstance,
+  { userId, ...data }: Omit<OrganizationProfile, "id">,
+) {
+  return axios.patch<ApiResponse<OrganizationProfile>>(
+    `/organization-profile/${userId}`,
+    data,
+  );
 }

@@ -1,38 +1,64 @@
 import { Metadata } from "next";
 import EditOrgProfileForm from "./_components/edit-profile-form";
+import { getSession } from "@/lib/auth";
+import { serverAxios } from "@/lib/server-axios";
+import { getOrganizationProfileById } from "@/services/organizationApi";
+import { redirect } from "next/navigation";
+import { EditOrgProfileValues } from "./_utils/schema";
+import { isAxiosError } from "axios";
 
 export const metadata: Metadata = {
   title: "Edit Organization Profile | NextHire",
   description: "Update your organization's profile information.",
 };
 
-// Mock Data (Consistent with profile page)
-const mockOrgProfile = {
-  name: "Acme Innovations Ltd.",
-  about:
-    "Acme Innovations is a forward-thinking technology company dedicated to solving the world's most complex problems through cutting-edge software solutions. We believe in innovation, integrity, and inclusivity. Our team is composed of passionate individuals who thrive on challenges and continuous learning. We are currently expanding our horizons into AI and machine learning sectors.",
-  organizationType: "Technology",
-  employeeCount: "51-200",
-  address: {
-    addressLine1: "123 Tech Avenue",
-    addressLine2: "Suite 400",
-    city: "San Francisco",
-    state: "CA",
-    zipCode: "94105",
-    country: "United States",
-  },
-  websiteUrl: "https://www.acme.inc",
-  linkedinUrl: "https://linkedin.com/company/acme-inc",
-  publicEmail: "contact@acme.inc",
-  publicPhone: "+1 (555) 123-4567",
-};
+// const mockOrgProfile = {
+//   name: "Acme Innovations Ltd.",
+//   about:
+//     "Acme Innovations is a forward-thinking technology company dedicated to solving the world's most complex problems through cutting-edge software solutions. We believe in innovation, integrity, and inclusivity. Our team is composed of passionate individuals who thrive on challenges and continuous learning. We are currently expanding our horizons into AI and machine learning sectors.",
+//   organizationType: "Technology",
+//   employeeCount: "51-200",
+//   address: {
+//     addressLine1: "123 Tech Avenue",
+//     addressLine2: "Suite 400",
+//     city: "San Francisco",
+//     state: "CA",
+//     zipCode: "94105",
+//     country: "United States",
+//   },
+//   websiteUrl: "https://www.acme.inc",
+//   linkedinUrl: "https://linkedin.com/company/acme-inc",
+//   publicEmail: "contact@acme.inc",
+//   publicPhone: "+1 (555) 123-4567",
+// };
 
 interface Props {
   params: Promise<{ id: string }>;
 }
 
 export default async function EditOrganizationProfilePage({ params }: Props) {
-  const { id } = await params;
+  const { id: profileId } = await params;
+  const { userId } = await getSession();
+  const isProfileOwner = userId === profileId;
+  let status: number | null = null;
+
+  if (!isProfileOwner) {
+    redirect("/unauthorized" as any);
+  }
+
+  let data;
+  try {
+    const response = await getOrganizationProfileById(serverAxios, profileId);
+    if (response.data.status === "success") {
+      data = response.data.data;
+    }
+    status = response.status;
+  } catch (error) {
+    if (isAxiosError(error)) {
+      console.log(error.message);
+      status = error.response?.status || null;
+    }
+  }
 
   return (
     <div className="min-h-screen bg-muted/30 py-10">
@@ -43,8 +69,25 @@ export default async function EditOrganizationProfilePage({ params }: Props) {
             Manage your organization's public information and settings.
           </p>
         </div>
-
-        <EditOrgProfileForm initialData={mockOrgProfile} />
+        <EditOrgProfileForm
+          initialData={
+            !data
+              ? undefined
+              : {
+                  name: data.name,
+                  about: data.about,
+                  organizationType: data.organizationType,
+                  employeeCount: data.employeeCount,
+                  websiteUrl: data.websiteUrl,
+                  linkedinUrl: data.linkedinUrl,
+                  publicEmail: data.publicEmail,
+                  publicPhone: data.publicPhone,
+                  address: data.address,
+                }
+          }
+          isNewProfile={status === 404}
+          userId={userId}
+        />
       </div>
     </div>
   );

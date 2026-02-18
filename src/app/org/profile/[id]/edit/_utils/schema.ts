@@ -9,11 +9,12 @@ export const formSchema = z.object({
   about: z.string().min(10, {
     message: "About description must be at least 10 characters.",
   }),
-  organizationType: z.nativeEnum(
-    OrganizationTypeEnum,
-    "Select valid organization type",
-  ),
-  employeeCount: z.nativeEnum(EmployeeCountEnum, "Select valid employee count"),
+  organizationType: z
+    .nativeEnum(OrganizationTypeEnum, "Select valid organization type")
+    .optional(),
+  employeeCount: z
+    .nativeEnum(EmployeeCountEnum, "Select valid employee count")
+    .optional(),
   websiteUrl: z
     .url({ message: "Please enter a valid URL." })
     .optional()
@@ -27,7 +28,7 @@ export const formSchema = z.object({
     .optional()
     .or(z.literal("")),
   publicPhone: z.string().optional(),
-  address: addressSchema,
+  address: addressSchema.optional(),
 });
 
 export type EditOrgProfileValues = z.infer<typeof formSchema>;

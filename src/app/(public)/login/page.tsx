@@ -38,7 +38,7 @@ export default function LoginPage() {
         userApi.endpoints.getMe.initiate(),
       ).unwrap();
       const redirectionPath = redirectionPages[response.data.userType];
-      router.replace(redirectionPath);
+      router.replace(redirectionPath as any);
     },
   });
 
@@ -86,7 +86,10 @@ export default function LoginPage() {
           <CardFooter className="justify-center">
             <div className="text-sm text-muted-foreground">
               Don&apos;t have an account?
-              <Link href="/register" className="underline hover:text-primary">
+              <Link
+                href={"/register" as any}
+                className="underline hover:text-primary"
+              >
                 Sign up
               </Link>
             </div>

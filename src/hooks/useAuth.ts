@@ -6,7 +6,7 @@ export const useAuth = () => {
   const dispatch = useAppDispatch();
 
   // Select only the parts of the state we need
-  const { accessToken, isAuthenticated, loading, error } = useAppSelector(
+  const { isAuthenticated, loading, error } = useAppSelector(
     (state) => state.auth,
   );
   // const user = useAppSelector(
@@ -21,7 +21,6 @@ export const useAuth = () => {
 
   return {
     // user,
-    accessToken,
     isAuthenticated,
     isLoading: loading,
     error,

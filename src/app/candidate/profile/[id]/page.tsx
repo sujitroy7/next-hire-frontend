@@ -218,8 +218,8 @@ export default async function CandidateProfilePage({ params }: PageProps) {
               </CardHeader>
               <CardContent>
                 <div className="space-y-8">
-                  {data.experiences.map((job, index) => (
-                    <div key={index} className="relative pl-2">
+                  {data.experiences.map((job: any, index: number) => (
+                    <div key={job.id} className="relative pl-2">
                       {/* Standard Timeline Item */}
                       <div className="flex flex-col gap-4 sm:flex-row sm:items-start">
                         {/* Logo Placeholder */}
@@ -279,8 +279,8 @@ export default async function CandidateProfilePage({ params }: PageProps) {
               </CardHeader>
               <CardContent>
                 <div className="space-y-6">
-                  {data.education.map((edu, index) => (
-                    <div key={index}>
+                  {data.education.map((edu: any, index: number) => (
+                    <div key={edu.id}>
                       <div className="flex items-start gap-4">
                         <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-md border bg-muted">
                           <GraduationCap className="h-6 w-6 text-muted-foreground" />

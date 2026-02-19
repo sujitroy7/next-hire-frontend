@@ -31,7 +31,7 @@ export const formSchema = z.object({
     .optional()
     .or(z.literal("")),
   publicPhone: z.string().optional(),
-  address: addressSchema.optional(),
+  address: addressSchema.nullable(),
 });
 
 export type EditOrgProfileValues = z.infer<typeof formSchema>;

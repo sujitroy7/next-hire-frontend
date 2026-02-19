@@ -1,4 +1,4 @@
-import { Address } from "./common";
+import { Address } from "../schema/address";
 
 export enum EmploymentEnum {
   FULL_TIME = "FULL_TIME",
@@ -46,7 +46,7 @@ export interface OrganizationProfile {
   linkedinUrl?: string;
   publicEmail?: string;
   publicPhone?: string;
-  address?: Address;
+  address?: Address | null;
 
   createdAt: string;
   updatedAt: string;

@@ -1,4 +1,3 @@
-import { FormikValues } from "formik";
 import {
   Card,
   CardContent,
@@ -36,10 +35,10 @@ export default function AddressFormSection<T extends FieldValues>({
       <CardContent className="grid gap-6">
         <FormField
           control={control}
-          name={field("addressLine1")}
+          name={field("streetLine1")}
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Address Line 1</FormLabel>
+              <FormLabel>Street Line 1</FormLabel>
               <FormControl>
                 <Input placeholder="123 Main St" {...field} />
               </FormControl>
@@ -50,10 +49,10 @@ export default function AddressFormSection<T extends FieldValues>({
 
         <FormField
           control={control}
-          name={field("addressLine2")}
+          name={field("streetLine2")}
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Address Line 2 (Optional)</FormLabel>
+              <FormLabel>Street Line 2 (Optional)</FormLabel>
               <FormControl>
                 <Input placeholder="Suite 100" {...field} />
               </FormControl>
@@ -95,7 +94,7 @@ export default function AddressFormSection<T extends FieldValues>({
         <div className="grid gap-6 sm:grid-cols-2">
           <FormField
             control={control}
-            name={field("zipCode")}
+            name={field("postalCode")}
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Zip / Postal Code</FormLabel>

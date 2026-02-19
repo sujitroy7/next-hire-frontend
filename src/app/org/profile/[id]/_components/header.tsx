@@ -1,7 +1,7 @@
 import { MapPin, CheckCircle, Building2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import EditProfile from "./edit-profile";
+import EditProfileButton from "./edit-profile-button";
 import { OrganizationType } from "@/types/organization";
 import { toTitleCase } from "@/lib/common";
 
@@ -60,7 +60,7 @@ export default async function Header({
           </div>
         </div>
       </div>
-      <EditProfile id={profileId} />
+      <EditProfileButton id={profileId} />
     </div>
   );
 }

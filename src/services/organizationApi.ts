@@ -1,5 +1,6 @@
-import { ApiResponse } from "@/types/api";
+import { ApiResponse, PaginationParams, PaginationResponse } from "@/types/api";
 import { OrganizationProfile } from "@/types/organization";
+import { Recruiter } from "@/types/recruiter";
 import { AxiosInstance } from "axios";
 
 export async function getOrganizationProfileById(
@@ -37,5 +38,15 @@ export async function updateOrganizationProfile(
   return axios.patch<ApiResponse<OrganizationProfile>>(
     `/organization-profile/${userId}`,
     data,
+  );
+}
+
+export async function getOrgRecruiters(
+  axios: AxiosInstance,
+  { page, limit }: PaginationParams,
+) {
+  return axios.get<ApiResponse<PaginationResponse<Recruiter[]>>>(
+    `/users/recruiters`,
+    { params: { page, limit } },
   );
 }

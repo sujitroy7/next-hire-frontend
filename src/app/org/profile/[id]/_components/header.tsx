@@ -60,7 +60,7 @@ export default async function Header({
           </div>
         </div>
       </div>
-      <EditProfileButton id={profileId} />
+      {isProfileOwner && <EditProfileButton id={profileId} />}
     </div>
   );
 }

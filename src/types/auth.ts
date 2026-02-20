@@ -7,10 +7,9 @@ export type UserRole = keyof typeof UserRoleEnum;
 
 export interface User {
   id: string;
+  fullName: string;
   email: string;
-  phone: string | null;
   userType: UserRole;
-  addressId: string | null;
   createdAt: string;
 }
 

@@ -1,9 +1,11 @@
 import { useAppSelector, useAppDispatch } from "@/store/hooks";
 import { useGetMeQuery } from "@/store/services/userApi";
 import { login, logout } from "@/store/thunks/authThunk";
+import { useRouter } from "next/navigation";
 import { useCallback } from "react";
 
 export const useAuth = () => {
+  const router = useRouter();
   const dispatch = useAppDispatch();
 
   const {
@@ -14,9 +16,9 @@ export const useAuth = () => {
 
   const { data, isLoading: isUserLoading } = useGetMeQuery();
 
-  const handleLogout = useCallback(() => {
-    dispatch(logout());
-    window.location.href = "/login";
+  const handleLogout = useCallback(async () => {
+    await dispatch(logout());
+    router.refresh();
   }, [dispatch]);
 
   return {

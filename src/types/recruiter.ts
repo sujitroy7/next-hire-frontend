@@ -15,18 +15,3 @@ export interface Recruiter {
   isActive: boolean;
   user: RecruiterUser;
 }
-
-export interface RecruiterPagination {
-  total: number;
-  page: number;
-  limit: number;
-  totalPages: number;
-}
-
-export interface RecruitersResponse {
-  status: string;
-  data: {
-    recruiters: Recruiter[];
-    pagination: RecruiterPagination;
-  };
-}

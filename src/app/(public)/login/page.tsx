@@ -1,7 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { useFormik } from "formik";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -12,7 +14,14 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { login } from "@/store/thunks/authThunk";
 import { userApi } from "@/store/services/userApi";
 import { useAppDispatch } from "@/store/hooks";
@@ -24,78 +33,103 @@ const redirectionPages: Record<UserRole, string> = {
   RECRUITER: "/recruiter/dashboard",
   CANDIDATE: "/candidate/dashboard",
 };
+
+const formSchema = z.object({
+  email: z.string().email("Invalid email address"),
+  password: z.string().min(1, "Password is required"),
+});
+
 export default function LoginPage() {
   const router = useRouter();
   const dispatch = useAppDispatch();
-  const formik = useFormik({
-    initialValues: {
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
       email: "",
       password: "",
     },
-    onSubmit: async (values) => {
+  });
+
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    try {
       await dispatch(login(values)).unwrap();
       const response = await dispatch(
         userApi.endpoints.getMe.initiate(),
       ).unwrap();
       const redirectionPath = redirectionPages[response.data.userType];
       router.replace(redirectionPath as any);
-    },
-  });
+    } catch (error) {
+      console.error("Login failed:", error);
+    }
+  };
 
   return (
     <div className="flex h-screen w-full justify-center px-4">
-      <form className="w-full max-w-sm" onSubmit={formik.handleSubmit}>
-        <Card className="w-full max-w-sm h-fit mt-24">
-          <CardHeader>
-            <CardTitle className="text-2xl">Login</CardTitle>
-            <CardDescription>
-              Enter your email below to login to your account.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="grid gap-4">
-            <div className="grid gap-2">
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                type="email"
+      <Form {...form}>
+        <form
+          className="w-full max-w-sm"
+          onSubmit={form.handleSubmit(onSubmit)}
+        >
+          <Card className="w-full max-w-sm h-fit mt-24">
+            <CardHeader>
+              <CardTitle className="text-2xl">Login</CardTitle>
+              <CardDescription>
+                Enter your email below to login to your account.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="grid gap-4">
+              <FormField
+                control={form.control}
                 name="email"
-                placeholder="m@example.com"
-                required
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                value={formik.values.email}
+                render={({ field }) => (
+                  <FormItem className="grid gap-2">
+                    <FormLabel>Email</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="email"
+                        placeholder="m@example.com"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor="password">Password</Label>
-              <Input
-                id="password"
+              <FormField
+                control={form.control}
                 name="password"
-                type="password"
-                placeholder="Enter password"
-                required
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                value={formik.values.password}
+                render={({ field }) => (
+                  <FormItem className="grid gap-2">
+                    <FormLabel>Password</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="password"
+                        placeholder="Enter password"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
-            </div>
-            <Button className="w-full" type="submit">
-              Sign in
-            </Button>
-          </CardContent>
-          <CardFooter className="justify-center">
-            <div className="text-sm text-muted-foreground">
-              Don&apos;t have an account?
-              <Link
-                href={"/register" as any}
-                className="underline hover:text-primary"
-              >
-                Sign up
-              </Link>
-            </div>
-          </CardFooter>
-        </Card>
-      </form>
+              <Button className="w-full" type="submit">
+                Sign in
+              </Button>
+            </CardContent>
+            <CardFooter className="justify-center">
+              <div className="text-sm text-muted-foreground">
+                Don&apos;t have an account?{" "}
+                <Link
+                  href={"/register" as any}
+                  className="underline hover:text-primary"
+                >
+                  Sign up
+                </Link>
+              </div>
+            </CardFooter>
+          </Card>
+        </form>
+      </Form>
     </div>
   );
 }

@@ -1,7 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { useFormik } from "formik";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner"; // <-- Import toast from sonner
 import { Button } from "@/components/ui/button";
@@ -14,7 +16,14 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import {
   Select,
   SelectContent,
@@ -24,109 +33,141 @@ import {
 } from "@/components/ui/select";
 import { clientAxios } from "@/lib/axios";
 
+const formSchema = z.object({
+  email: z.string().email("Invalid email address"),
+  password: z.string().min(1, "Password is required"),
+  userType: z.enum(["CANDIDATE", "ORGANIZATION"]),
+});
+
 export default function RegisterPage() {
   const router = useRouter();
 
-  const formik = useFormik({
-    initialValues: {
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
       email: "",
       password: "",
       userType: "CANDIDATE",
     },
-    onSubmit: async (values) => {
-      try {
-        const response = await clientAxios.post("/users", values);
-        console.log(response, "test-log");
-
-        if (response.status === 201) {
-          toast.success("Account created successfully!");
-          router.push("/login");
-          return;
-        }
-
-        throw new Error("Registration failed");
-      } catch (error) {
-        console.error("Error registering:", error);
-        toast.error("Something went wrong. Please try again.");
-      }
-    },
   });
+
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    try {
+      const response = await clientAxios.post("/users", values);
+      console.log(response, "test-log");
+
+      if (response.status === 201) {
+        toast.success("Account created successfully!");
+        router.push("/login" as any);
+        return;
+      }
+
+      throw new Error("Registration failed");
+    } catch (error) {
+      console.error("Error registering:", error);
+      toast.error("Something went wrong. Please try again.");
+    }
+  };
 
   return (
     <div className="flex h-screen w-full justify-center px-4">
-      <form className="w-full max-w-sm" onSubmit={formik.handleSubmit}>
-        <Card className="w-full max-w-sm h-fit mt-24">
-          <CardHeader>
-            <CardTitle className="text-2xl">Create an account</CardTitle>
-            <CardDescription>
-              Enter your details below to create your account.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="grid gap-4">
-            {/* Email Field */}
-            <div className="grid gap-2">
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                type="email"
+      <Form {...form}>
+        <form
+          className="w-full max-w-sm"
+          onSubmit={form.handleSubmit(onSubmit)}
+        >
+          <Card className="w-full max-w-sm h-fit mt-24">
+            <CardHeader>
+              <CardTitle className="text-2xl">Create an account</CardTitle>
+              <CardDescription>
+                Enter your details below to create your account.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="grid gap-4">
+              {/* Email Field */}
+              <FormField
+                control={form.control}
                 name="email"
-                placeholder="m@example.com"
-                required
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                value={formik.values.email}
+                render={({ field }) => (
+                  <FormItem className="grid gap-2">
+                    <FormLabel>Email</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="email"
+                        placeholder="m@example.com"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
-            </div>
 
-            {/* Password Field */}
-            <div className="grid gap-2">
-              <Label htmlFor="password">Password</Label>
-              <Input
-                id="password"
+              {/* Password Field */}
+              <FormField
+                control={form.control}
                 name="password"
-                type="password"
-                placeholder="Enter password"
-                required
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                value={formik.values.password}
+                render={({ field }) => (
+                  <FormItem className="grid gap-2">
+                    <FormLabel>Password</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="password"
+                        placeholder="Enter password"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
-            </div>
 
-            {/* Select Field */}
-            <div className="grid gap-2">
-              <Label htmlFor="userType">I am a</Label>
-              <Select
+              {/* Select Field */}
+              <FormField
+                control={form.control}
                 name="userType"
-                defaultValue={formik.values.userType}
-                onValueChange={(value) =>
-                  formik.setFieldValue("userType", value)
-                }
-              >
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Select user type" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="CANDIDATE">Candidate</SelectItem>
-                  <SelectItem value="ORGANIZATION">Organization</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+                render={({ field }) => (
+                  <FormItem className="grid gap-2">
+                    <FormLabel>I am a</FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger className="w-full">
+                          <SelectValue placeholder="Select user type" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="CANDIDATE">Candidate</SelectItem>
+                        <SelectItem value="ORGANIZATION">
+                          Organization
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-            <Button className="w-full" type="submit">
-              Register
-            </Button>
-          </CardContent>
-          <CardFooter className="justify-center">
-            <div className="text-sm text-muted-foreground">
-              Already have an account?{" "}
-              <Link href="/login" className="underline hover:text-primary">
-                Login
-              </Link>
-            </div>
-          </CardFooter>
-        </Card>
-      </form>
+              <Button className="w-full" type="submit">
+                Register
+              </Button>
+            </CardContent>
+            <CardFooter className="justify-center">
+              <div className="text-sm text-muted-foreground">
+                Already have an account?{" "}
+                <Link
+                  href={"/login" as any}
+                  className="underline hover:text-primary"
+                >
+                  Login
+                </Link>
+              </div>
+            </CardFooter>
+          </Card>
+        </form>
+      </Form>
     </div>
   );
 }

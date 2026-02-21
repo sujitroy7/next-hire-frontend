@@ -8,15 +8,15 @@ interface CandidateProfileData extends CandidateProfile {
 
 export const candidateApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    getCandidateProfile: builder.query<CandidateProfileData, string>({
-      query: (userId) => ({
-        url: `/candidate-profile/${userId}`,
-        method: "GET",
-      }),
-      transformResponse: (response: { data: CandidateProfileData }) =>
-        response.data,
-      providesTags: ["CandidateProfile"],
-    }),
+    // getCandidateProfile: builder.query<CandidateProfileData, string>({
+    //   query: (userId) => ({
+    //     url: `/candidate-profile/${userId}`,
+    //     method: "GET",
+    //   }),
+    //   transformResponse: (response: { data: CandidateProfileData }) =>
+    //     response.data,
+    //   providesTags: ["CandidateProfile"],
+    // }),
     updateCandidateProfile: builder.mutation<
       CandidateProfile,
       { userId: string; data: Partial<CandidateProfile> }
@@ -26,12 +26,12 @@ export const candidateApi = baseApi.injectEndpoints({
         method: "PATCH",
         data: data,
       }),
-      invalidatesTags: ["CandidateProfile"],
+      invalidatesTags: ["User"],
     }),
   }),
 });
 
 export const {
-  useGetCandidateProfileQuery,
+  // useGetCandidateProfileQuery,
   useUpdateCandidateProfileMutation,
 } = candidateApi;

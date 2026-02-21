@@ -24,13 +24,15 @@ export default async function OrganizationProfilePage({
     if (response.data.status !== "success") {
       notFound();
     }
-
     data = response.data.data;
   } catch (error) {
     console.log(error);
     if (isAxiosError(error)) {
       const status = error.response?.status;
       if (status === 404) {
+        if (profileId === userId) {
+          redirect(`/org/profile/${profileId}/edit` as any);
+        }
         notFound();
       }
       if (status === 401) {

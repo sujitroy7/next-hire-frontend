@@ -50,7 +50,7 @@ export default async function EditOrganizationProfilePage({ params }: Props) {
           </p>
         </div>
         <EditOrgProfileForm
-          initialData={formSchema.parse(data)}
+          initialData={!data ? data : formSchema.parse(data)}
           isNewProfile={status === 404}
           userId={userId}
         />

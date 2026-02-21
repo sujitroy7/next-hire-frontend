@@ -69,9 +69,11 @@ export default function OrgSidebar() {
         </div>
         {!collapsed && (
           <div className="min-w-0">
-            <p className="text-sm font-semibold text-sidebar-foreground truncate">
-              {user?.fullName}
-            </p>
+            {user?.fullName && (
+              <p className="text-sm font-semibold text-sidebar-foreground truncate">
+                {user?.fullName}
+              </p>
+            )}
             <p className="text-xs text-muted-foreground truncate">
               Organization
             </p>

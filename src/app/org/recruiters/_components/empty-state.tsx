@@ -2,6 +2,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Users } from "lucide-react";
 import { Plus } from "lucide-react";
+import AddRecruiterButtonWrapper from "./add-recruiter-dialog-wrapper";
 
 export default function EmptyState() {
   return (
@@ -17,10 +18,12 @@ export default function EmptyState() {
           Recruiters help you find the best talent. Add your first recruiter to
           get started.
         </p>
-        <Button>
-          <Plus />
-          Add Your First Recruiter
-        </Button>
+        <AddRecruiterButtonWrapper>
+          <Button>
+            <Plus />
+            Add Your First Recruiter
+          </Button>
+        </AddRecruiterButtonWrapper>
       </CardContent>
     </Card>
   );

@@ -50,3 +50,14 @@ export async function getOrgRecruiters(
     { params: { page, limit } },
   );
 }
+
+export async function createOrgRecruiter(
+  axios: AxiosInstance,
+  data: { firstName: string; lastName: string; email: string },
+) {
+  return axios.post<ApiResponse<Recruiter>>(`/users/recruiter`, data);
+}
+
+export async function deleteOrgRecruiter(axios: AxiosInstance, userId: string) {
+  return axios.delete<ApiResponse<void>>(`/users/recruiter/${userId}`);
+}

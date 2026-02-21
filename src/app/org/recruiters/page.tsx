@@ -9,9 +9,10 @@ import { AxiosError } from "axios";
 import { getOrgRecruiters } from "@/services/organizationApi";
 import EmptyState from "./_components/empty-state";
 import RecruiterRow from "./_components/recruiter-row";
+import AddRecruiterButtonWrapper from "./_components/add-recruiter-dialog-wrapper";
 
 interface Props {
-  searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
+  searchParams?: Promise<{ page: string; limit: string; action?: string }>;
 }
 
 export default async function RecruitersPage(props: Props) {
@@ -52,10 +53,12 @@ export default async function RecruitersPage(props: Props) {
             </p>
           </div>
           {!isEmpty && (
-            <Button>
-              <Plus />
-              Add Recruiter
-            </Button>
+            <AddRecruiterButtonWrapper>
+              <Button className="cursor-pointer">
+                <Plus className="mr-2 h-4 w-4" />
+                Add Recruiter
+              </Button>
+            </AddRecruiterButtonWrapper>
           )}
         </div>
 

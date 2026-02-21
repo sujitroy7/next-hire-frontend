@@ -3,7 +3,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { formatDate, getInitials } from "@/lib/utils";
 import { Recruiter } from "@/types/recruiter";
-import { Pencil, Trash2 } from "lucide-react";
+import { Pencil } from "lucide-react";
+import DeleteRecruiterButton from "./delete-recruiter-button";
 
 export default function RecruiterRow({ recruiter }: { recruiter: Recruiter }) {
   return (
@@ -37,17 +38,10 @@ export default function RecruiterRow({ recruiter }: { recruiter: Recruiter }) {
 
       {/* Right: Actions */}
       <div className="flex items-center gap-1">
-        <Button variant="ghost" size="icon-sm" aria-label="Edit recruiter">
+        {/* <Button variant="ghost" size="icon-sm" aria-label="Edit recruiter">
           <Pencil className="size-4" />
-        </Button>
-        <Button
-          variant="ghost"
-          size="icon-sm"
-          className="text-destructive hover:text-destructive hover:bg-destructive/10"
-          aria-label="Delete recruiter"
-        >
-          <Trash2 className="size-4" />
-        </Button>
+        </Button> */}
+        <DeleteRecruiterButton userId={recruiter.userId} />
       </div>
     </div>
   );

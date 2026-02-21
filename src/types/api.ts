@@ -1,7 +1,6 @@
-export type SuccessResponse<T> = {
-  status: "success";
-  data: T;
-};
+export type SuccessResponse<T = void> = T extends void
+  ? { status: "success" }
+  : { status: "success"; data: T };
 
 export type FailedResponse = {
   status: "error";

@@ -25,14 +25,16 @@ export function JobsFilters() {
           type="search"
           placeholder="Search jobs by title"
           className="pl-9 h-10 w-full md:max-w-md bg-white shadow-sm"
-          value={filters.search}
+          value={filters.search || ""}
           onChange={(e) => setFilters({ search: e.target.value || null })}
         />
       </div>
       <div className="min-w-full sm:min-w-[140px]">
         <Select
-          value={filters.status}
-          onValueChange={(value) => setFilters({ status: value || null })}
+          value={filters.status ?? "ALL"}
+          onValueChange={(value) =>
+            setFilters({ status: value === "ALL" ? null : value })
+          }
         >
           <SelectTrigger className="h-10 bg-white shadow-sm w-full">
             <SelectValue placeholder="Status" />

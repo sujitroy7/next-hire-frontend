@@ -4,6 +4,7 @@ import "./globals.css";
 import { Providers } from "../store/Providers";
 import AuthInitializer from "@/components/shared/AuthInitializer";
 import { Toaster } from "sonner";
+import { NuqsAdapter } from "nuqs/adapters/next/app";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -30,11 +31,13 @@ export default async function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <Toaster />
-        <Providers>
-          <AuthInitializer />
-          {children}
-        </Providers>
+        <NuqsAdapter>
+          <Toaster />
+          <Providers>
+            <AuthInitializer />
+            {children}
+          </Providers>
+        </NuqsAdapter>
       </body>
     </html>
   );

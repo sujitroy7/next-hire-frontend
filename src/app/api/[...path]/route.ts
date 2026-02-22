@@ -47,7 +47,8 @@ async function handleRequest(
   method: string,
 ) {
   const path = params.path.join("/");
-  const url = `${BACKEND_URL}/${path}`;
+  const searchParams = request.nextUrl.search;
+  const url = `${BACKEND_URL}/${path}${searchParams}`;
 
   // Get cookies from the request
   const cookieStore = await cookies();

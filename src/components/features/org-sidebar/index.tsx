@@ -11,7 +11,6 @@ import {
   Building2,
   Users,
   Briefcase,
-  Settings,
   LogOut,
   ChevronLeft,
   ChevronRight,
@@ -30,7 +29,6 @@ const NAV_ITEMS: NavItem[] = [
   { label: "Profile", href: "/org/profile", icon: Building2 },
   { label: "Recruiters", href: "/org/recruiters", icon: Users },
   { label: "Jobs", href: "/org/jobs", icon: Briefcase },
-  { label: "Settings", href: "/org/settings", icon: Settings },
 ];
 
 function isActive(href: string, pathname: string): boolean {

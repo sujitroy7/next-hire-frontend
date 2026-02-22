@@ -64,7 +64,7 @@ export async function deleteOrgRecruiter(axios: AxiosInstance, userId: string) {
 }
 
 interface GetOrganizationJobsParams extends PaginationParams {
-  search?: string;
+  search?: string | null;
   status?: string;
 }
 export async function getOrganizationJobs(

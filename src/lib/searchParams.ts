@@ -6,7 +6,7 @@ import {
 import { z } from "zod";
 
 export const jobsSearchParams = {
-  search: parseAsString.withDefault(""),
+  search: parseAsString,
   status: parseAsString.withDefault("ALL"),
   page: parseAsInteger.withDefault(1),
 };
@@ -15,7 +15,7 @@ export const jobsSearchParams = {
 export const jobsSearchParamsCache = createSearchParamsCache(jobsSearchParams);
 
 export const jobsZodSchema = z.object({
-  search: z.string().optional().default(""),
+  search: z.string().optional().nullable().default(null),
   status: z.string().optional().default("ALL"),
   page: z.number().int().positive().optional().default(1),
 });

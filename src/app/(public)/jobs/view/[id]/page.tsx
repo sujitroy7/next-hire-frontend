@@ -5,20 +5,12 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-} from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import {
   Building2,
   MapPin,
   Briefcase,
   DollarSign,
-  Calendar,
   Users,
   ExternalLink,
   Share2,
@@ -26,6 +18,24 @@ import {
 } from "lucide-react";
 import { getOrganizationProfileById } from "@/services/organizationApi";
 import ContactInfoSidebar from "@/app/org/profile/[id]/_components/contact-info-sidebar";
+import { Job } from "@/types/job";
+
+const formatCurrency = (amount: number, currency: string = "USD") => {
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency,
+    maximumFractionDigits: 0,
+  }).format(amount);
+};
+
+const getSalaryDisplay = (job: Job) => {
+  if (!job.salaryMin && !job.salaryMax) return "Salary not specified";
+  if (job.salaryMin && !job.salaryMax)
+    return `${formatCurrency(job.salaryMin, job.currency)}+`;
+  if (!job.salaryMin && job.salaryMax)
+    return `Up to ${formatCurrency(job.salaryMax, job.currency)}`;
+  return `${formatCurrency(job.salaryMin, job.currency)} - ${formatCurrency(job.salaryMax, job.currency)}`;
+};
 
 export default async function JobViewPage({
   params,
@@ -34,23 +44,12 @@ export default async function JobViewPage({
 }) {
   const { id } = await params;
   let job;
+  let org;
 
   try {
     const response = await getJobById(serverAxios, id);
     if (response.data.status === "success") {
       job = response.data.data;
-    }
-  } catch (error) {
-    if (error instanceof AxiosError && error.response?.status === 404) {
-      notFound();
-    }
-  }
-
-  if (!job) return notFound();
-
-  let org;
-  try {
-    if (job.organizationId) {
       const orgResponse = await getOrganizationProfileById(
         serverAxios,
         job.organizationId,
@@ -60,27 +59,14 @@ export default async function JobViewPage({
       }
     }
   } catch (error) {
-    console.error("Failed to fetch organization profile", error);
+    if (error instanceof AxiosError && error.response?.status === 404)
+      notFound();
+    throw error;
   }
 
+  if (!job) return notFound();
+
   const isExternalApply = !!job.externalApplyUrl;
-
-  const formatCurrency = (amount: number, currency: string = "USD") => {
-    return new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency,
-      maximumFractionDigits: 0,
-    }).format(amount);
-  };
-
-  const getSalaryDisplay = () => {
-    if (!job.salaryMin && !job.salaryMax) return "Salary not specified";
-    if (job.salaryMin && !job.salaryMax)
-      return `${formatCurrency(job.salaryMin, job.currency)}+`;
-    if (!job.salaryMin && job.salaryMax)
-      return `Up to ${formatCurrency(job.salaryMax, job.currency)}`;
-    return `${formatCurrency(job.salaryMin, job.currency)} - ${formatCurrency(job.salaryMax, job.currency)}`;
-  };
 
   const formattedDate = job.publishedAt
     ? new Intl.DateTimeFormat("en-US", {
@@ -146,7 +132,7 @@ export default async function JobViewPage({
                 <div className="flex items-center gap-1.5 hover:text-foreground transition-colors cursor-default">
                   <DollarSign className="w-4 h-4" />
                   <span>
-                    {getSalaryDisplay()}
+                    {getSalaryDisplay(job)}
                     {job.salaryInterval
                       ? ` / ${job.salaryInterval.toLowerCase()}`
                       : ""}
@@ -247,32 +233,6 @@ export default async function JobViewPage({
                   </div>
                 </section>
               </>
-            )}
-
-            {/* If no external application url, show default flow block */}
-            {!isExternalApply && (
-              <div id="apply" className="pt-8 mt-12">
-                <Card className="bg-muted/30 border-border overflow-hidden relative">
-                  <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-transparent pointer-events-none" />
-                  <CardHeader className="relative z-10">
-                    <CardTitle className="text-2xl">
-                      Ready to join us?
-                    </CardTitle>
-                    <CardDescription className="text-base">
-                      Take the next step in your career. Apply for this position
-                      today.
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent className="relative z-10">
-                    <Button
-                      size="lg"
-                      className="w-full sm:w-auto font-semibold px-8 hover:scale-[1.02] transition-transform"
-                    >
-                      Start Application
-                    </Button>
-                  </CardContent>
-                </Card>
-              </div>
             )}
           </div>
 

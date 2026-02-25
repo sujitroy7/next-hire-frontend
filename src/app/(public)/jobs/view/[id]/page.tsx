@@ -4,7 +4,6 @@ import { AxiosError } from "axios";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import {
   Building2,
@@ -12,13 +11,14 @@ import {
   Briefcase,
   DollarSign,
   Users,
-  ExternalLink,
-  Share2,
   Clock,
 } from "lucide-react";
 import { getOrganizationProfileById } from "@/services/organizationApi";
 import ContactInfoSidebar from "@/app/org/profile/[id]/_components/contact-info-sidebar";
 import { Job } from "@/types/job";
+import ApplyButton from "./_components/apply-button";
+import ShareButton from "./_components/share-button";
+import { Suspense } from "react";
 
 const formatCurrency = (amount: number, currency: string = "USD") => {
   return new Intl.NumberFormat("en-US", {
@@ -65,8 +65,6 @@ export default async function JobViewPage({
   }
 
   if (!job) return notFound();
-
-  const isExternalApply = !!job.externalApplyUrl;
 
   const formattedDate = job.publishedAt
     ? new Intl.DateTimeFormat("en-US", {
@@ -159,35 +157,12 @@ export default async function JobViewPage({
             </div>
 
             <div className="flex items-center gap-3 pt-2 md:pt-4 w-full md:w-auto">
-              {isExternalApply ? (
-                <Button
-                  size="lg"
-                  className="w-full md:w-auto font-semibold px-8 hover:scale-[1.02] transition-transform"
-                  asChild
-                >
-                  <a
-                    href={job.externalApplyUrl ?? undefined}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    Apply Now
-                    <ExternalLink className="w-4 h-4 ml-2" />
-                  </a>
-                </Button>
-              ) : (
-                <Button
-                  size="lg"
-                  className="w-full md:w-auto font-semibold px-8 hover:scale-[1.02] transition-transform"
-                  asChild
-                >
-                  <a href="#apply">Apply Now</a>
-                </Button>
-              )}
-              <Button size="lg" variant="outline" className="px-4" asChild>
-                <button aria-label="Share Job">
-                  <Share2 className="w-4 h-4 text-muted-foreground hover:text-foreground transition-colors" />
-                </button>
-              </Button>
+              <Suspense fallback={null}>
+                <ApplyButton job={job} />
+              </Suspense>
+              <Suspense fallback={null}>
+                <ShareButton job={job} />
+              </Suspense>
             </div>
           </div>
         </div>

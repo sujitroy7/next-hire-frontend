@@ -30,7 +30,7 @@ export default async function OrgJobsPage(props: Props) {
     const response = await getOrganizationJobs(serverAxios, {
       limit: 10,
       search,
-      status,
+      status: status ?? undefined,
       page,
     });
     if (response.data.status === "success") {

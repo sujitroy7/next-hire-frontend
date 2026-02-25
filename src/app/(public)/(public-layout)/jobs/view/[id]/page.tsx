@@ -132,7 +132,7 @@ export default async function JobViewPage({
                   <span>
                     {getSalaryDisplay(job)}
                     {job.salaryInterval
-                      ? ` / ${job.salaryInterval.toLowerCase()}`
+                      ? ` / ${job?.salaryInterval?.toLowerCase()}`
                       : ""}
                   </span>
                 </div>

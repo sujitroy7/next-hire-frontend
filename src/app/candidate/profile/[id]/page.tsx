@@ -5,36 +5,23 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { getSession } from "@/lib/auth";
 import { serverAxios } from "@/lib/server-axios";
+import { getInitials } from "@/lib/utils";
 import {
   Briefcase,
   Calendar,
   ExternalLink,
   GraduationCap,
   Mail,
-  MapPin,
   Phone,
   Pencil,
 } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { formatDate } from "./edit/_utils";
 
 interface PageProps {
-  params: {
-    id: string;
-  };
+  params: Promise<{ id: string }>;
 }
-
-// Helper function to format dates
-const formatDate = (date: Date | string | null | undefined) => {
-  if (!date) return "Present";
-  const d = new Date(date);
-  return d.toLocaleDateString("en-US", { month: "short", year: "numeric" });
-};
-
-// Get initials from name
-const getInitials = (firstName: string, lastName: string) => {
-  return `${firstName[0]}${lastName[0]}`.toUpperCase();
-};
 
 export default async function CandidateProfilePage({ params }: PageProps) {
   const { id } = await params;
@@ -97,7 +84,7 @@ export default async function CandidateProfilePage({ params }: PageProps) {
 
                 {isProfileOwner && (
                   <div className="mt-6 w-full space-y-3">
-                    <Link href={`${id}/edit`}>
+                    <Link href={`${id}/edit` as any}>
                       <Button variant="outline" className="w-full">
                         <Pencil className="mr-2 h-4 w-4" />
                         Edit Profile

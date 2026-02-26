@@ -64,13 +64,3 @@ export interface Job {
   organization: JobOrganization;
   recruiter: JobRecruiter;
 }
-
-export interface PaginatedJobResponse {
-  data: Job[];
-  meta: {
-    total: number;
-    page: number;
-    limit: number;
-    totalPages: number;
-  };
-}

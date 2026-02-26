@@ -20,6 +20,11 @@ export interface PermissionsTokenPayload {
   exp: number;
 }
 
+export interface Session {
+  userId: string;
+  userRole: UserRole;
+}
+
 export interface AccessTokenPayload {
   sub: string;
   email: string;

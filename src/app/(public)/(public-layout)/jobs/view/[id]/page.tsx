@@ -1,70 +1,66 @@
-import { serverAxios } from "@/lib/server-axios";
-import { getJobById } from "@/services/publicApi";
-import { AxiosError } from "axios";
-import { notFound } from "next/navigation";
-import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
-import {
-  Building2,
-  MapPin,
-  Briefcase,
-  DollarSign,
-  Users,
-  Clock,
-} from "lucide-react";
+import { fetchApi } from "@/lib/fetch";
+import { serverAxios } from "@/lib/server-axios";
 import { getOrganizationProfileById } from "@/services/organizationApi";
-import ContactInfoSidebar from "@/app/org/profile/[id]/_components/contact-info-sidebar";
+import { getJobById } from "@/services/publicApi";
 import { Job } from "@/types/job";
+import { OrganizationProfile } from "@/types/organization";
+import {
+  Briefcase,
+  Building2,
+  Clock,
+  DollarSign,
+  MapPin,
+  Users,
+} from "lucide-react";
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import { getSalaryDisplay } from "./_utils";
+import { Suspense } from "react";
 import ApplyButton from "./_components/apply-button";
 import ShareButton from "./_components/share-button";
-import { Suspense } from "react";
+import { Separator } from "@/components/ui/separator";
+import ContactInfoSidebar from "@/app/org/profile/[id]/_components/contact-info-sidebar";
 
-const formatCurrency = (amount: number, currency: string = "USD") => {
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency,
-    maximumFractionDigits: 0,
-  }).format(amount);
-};
+export async function generateStaticParams() {
+  const response = await fetchApi("/jobs");
+  if (response.status !== "success") return [];
+  const paths = response.data.data.map((job: any) => ({
+    id: String(job.id),
+  }));
+  return paths;
+}
 
-const getSalaryDisplay = (job: Job) => {
-  if (!job.salaryMin && !job.salaryMax) return "Salary not specified";
-  if (job.salaryMin && !job.salaryMax)
-    return `${formatCurrency(job.salaryMin, job.currency)}+`;
-  if (!job.salaryMin && job.salaryMax)
-    return `Up to ${formatCurrency(job.salaryMax, job.currency)}`;
-  return `${formatCurrency(job.salaryMin, job.currency)} - ${formatCurrency(job.salaryMax, job.currency)}`;
-};
-
-export default async function JobViewPage({
-  params,
-}: {
+interface Props {
   params: Promise<{ id: string }>;
-}) {
+}
+export default async function Page({ params }: Props) {
   const { id } = await params;
-  let job;
-  let org;
+
+  let job: Job | null = null;
+  let orgProfile: OrganizationProfile | null = null;
 
   try {
-    const response = await getJobById(serverAxios, id);
-    if (response.data.status === "success") {
-      job = response.data.data;
-      const orgResponse = await getOrganizationProfileById(
-        serverAxios,
-        job.organizationId,
-      );
-      if (orgResponse.data.status === "success") {
-        org = orgResponse.data.data;
-      }
+    const jobResponse = await getJobById(serverAxios, id);
+    if (jobResponse.data.status === "success") {
+      job = jobResponse.data.data;
     }
-  } catch (error) {
-    if (error instanceof AxiosError && error.response?.status === 404)
-      notFound();
-    throw error;
-  }
 
-  if (!job) return notFound();
+    if (!job) throw new Error("Job not found");
+
+    const orgResponse = await getOrganizationProfileById(
+      serverAxios,
+      job.organizationId,
+    );
+
+    if (orgResponse.data.status === "success") {
+      orgProfile = orgResponse.data.data;
+    }
+
+    if (!orgProfile) throw new Error("Organization Profile not found");
+  } catch {
+    notFound();
+  }
 
   const formattedDate = job.publishedAt
     ? new Intl.DateTimeFormat("en-US", {
@@ -115,7 +111,7 @@ export default async function JobViewPage({
                   className="flex items-center gap-1.5 hover:text-foreground transition-colors"
                 >
                   <Building2 className="w-4 h-4" />
-                  <span>{org?.name || "NextHire Organization"}</span>
+                  <span>{orgProfile?.name || "NextHire Organization"}</span>
                 </Link>
                 {job.location && (
                   <div className="flex items-center gap-1.5 hover:text-foreground transition-colors cursor-default">
@@ -213,14 +209,14 @@ export default async function JobViewPage({
 
           {/* Right Sidebar (Metadata) */}
           <div className="space-y-6">
-            {org ? (
+            {orgProfile ? (
               <ContactInfoSidebar
-                websiteUrl={org.websiteUrl}
-                linkedinUrl={org.linkedinUrl}
-                publicEmail={org.publicEmail}
-                publicPhone={org.publicPhone}
-                createdAt={org.createdAt || job.createdAt}
-                employeeCount={org.employeeCount || ""}
+                websiteUrl={orgProfile.websiteUrl}
+                linkedinUrl={orgProfile.linkedinUrl}
+                publicEmail={orgProfile.publicEmail}
+                publicPhone={orgProfile.publicPhone}
+                createdAt={orgProfile.createdAt || job.createdAt}
+                employeeCount={orgProfile.employeeCount || ""}
               />
             ) : null}
           </div>

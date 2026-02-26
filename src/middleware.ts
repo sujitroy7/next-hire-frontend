@@ -14,6 +14,8 @@ const publicRoutes = [
   /^\/jobs\/view\/[^/]+$/, // Matches /jobs/view/123, but NOT /jobs/view/123/edit
   /^\/jobs$/, // Matches /jobs
   /^\/about$/, // Matches /about
+  /^\/robots.txt$/, // Matches /robots.txt
+  /^\/sitemap.xml$/, // Matches /sitemap.xml
 ];
 
 export async function middleware(request: NextRequest) {

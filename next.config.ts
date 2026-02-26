@@ -9,6 +9,7 @@ const nextConfig: NextConfig = {
       .map((hostname) => ({ protocol: "https", hostname })),
   },
   reactCompiler: true,
+  cacheComponents: true,
   compiler: {
     removeConsole: process.env.NODE_ENV === "production",
   },

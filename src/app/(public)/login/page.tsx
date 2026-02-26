@@ -26,13 +26,7 @@ import { login } from "@/store/thunks/authThunk";
 import { userApi } from "@/store/services/userApi";
 import { useAppDispatch } from "@/store/hooks";
 import { useRouter } from "next/navigation";
-import { UserRole } from "@/types/auth";
-
-const redirectionPages: Record<UserRole, string> = {
-  ORGANIZATION: "/org/dashboard",
-  RECRUITER: "/recruiter/dashboard",
-  CANDIDATE: "/candidate/dashboard",
-};
+import { redirectionPages } from "@/constants/redirects";
 
 const formSchema = z.object({
   email: z.string().email("Invalid email address"),

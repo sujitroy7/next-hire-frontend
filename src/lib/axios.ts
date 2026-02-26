@@ -59,11 +59,6 @@ clientAxios.interceptors.response.use(
 
         store.dispatch(logout());
 
-        // Redirect to login page (client-side only)
-        if (typeof window !== "undefined") {
-          window.location.href = "/login";
-        }
-
         return Promise.reject(refreshError);
       }
     }

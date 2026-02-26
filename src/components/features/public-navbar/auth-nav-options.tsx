@@ -9,7 +9,8 @@ import NavItem from "./nav-item";
 export default function AuthNavOptions() {
   const { isAuthenticated, isLoading } = useAuth();
 
-  if (isLoading) return null;
+  if (isLoading)
+    return <div className="w-20 h-6 bg-muted animate-pulse rounded-sm"></div>;
 
   return (
     <>

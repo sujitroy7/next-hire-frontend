@@ -1,10 +1,15 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { Providers } from "../store/Providers";
 import AuthInitializer from "@/components/shared/AuthInitializer";
 import { Toaster } from "sonner";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
+import dynamic from "next/dynamic";
+import { Suspense } from "react";
+
+const ReduxProviders = dynamic(() =>
+  import("@/store/Providers").then((mod) => mod.Providers),
+);
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -33,10 +38,12 @@ export default async function RootLayout({
       >
         <NuqsAdapter>
           <Toaster />
-          <Providers>
-            <AuthInitializer />
-            {children}
-          </Providers>
+          <Suspense>
+            <ReduxProviders>
+              <AuthInitializer />
+              {children}
+            </ReduxProviders>
+          </Suspense>
         </NuqsAdapter>
       </body>
     </html>

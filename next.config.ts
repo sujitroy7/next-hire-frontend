@@ -2,7 +2,7 @@ import { envRequired } from "@/lib/envRequired";
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  reactStrictMode: true,
+  reactStrictMode: false,
   images: {
     remotePatterns: envRequired("WHITE_LISTED_IMAGE_WEBSITES")
       .split(",")

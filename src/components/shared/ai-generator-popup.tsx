@@ -6,17 +6,17 @@ import { Textarea } from "@/components/ui/textarea";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Loader2, Sparkles } from "lucide-react";
+import { GenerateContentResponse } from "@google/genai";
 
 interface AIGeneratorPopupProps {
-  prompt: string;
+  generatePrompt: (input: string) => string;
   trigger: React.ReactNode;
-  action: (prompt: string, input: string) => Promise<string>;
+  action: (prompt: string) => Promise<GenerateContentResponse | undefined>;
   children?: (props: {
     input: string;
     setInput: React.Dispatch<React.SetStateAction<string>>;
@@ -27,7 +27,7 @@ interface AIGeneratorPopupProps {
 }
 
 export function AIGeneratorPopup({
-  prompt,
+  generatePrompt,
   trigger,
   action,
   children,
@@ -54,8 +54,10 @@ export function AIGeneratorPopup({
     if (!input.trim()) return;
     setIsLoading(true);
     try {
-      const response = await action(prompt, input);
-      setAiResponse(response);
+      const response = await action(generatePrompt(input));
+      if (response?.text) {
+        setAiResponse(response.text);
+      }
     } catch (error) {
       console.error("AI Generation failed:", error);
       setAiResponse("Failed to generate response. Please try again.");

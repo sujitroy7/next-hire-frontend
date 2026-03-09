@@ -67,13 +67,12 @@ export function AIGeneratorPopup({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{trigger}</DialogTrigger>
-      <DialogContent className="sm:max-w-[600px]">
+      <DialogContent className="sm:max-w-[600px] max-h-[80svh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Sparkles className="h-5 w-5 text-primary" />
             AI Generator
           </DialogTitle>
-          <DialogDescription>{prompt}</DialogDescription>
         </DialogHeader>
 
         <div className="flex flex-col gap-6 py-4">

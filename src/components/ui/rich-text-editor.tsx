@@ -6,14 +6,16 @@ import { cn } from "@/lib/utils";
 import { forwardRef, useImperativeHandle } from "react";
 
 interface RichTextEditorProps {
-  value: string;
-  onChange: ({
+  value?: string;
+  onChange?: ({
     htmlValue,
     textValue,
   }: {
     htmlValue: string;
     textValue: string;
   }) => void;
+  readonly?: boolean;
+  className?: string;
 }
 
 export type TiptapEditorRef = {
@@ -21,7 +23,7 @@ export type TiptapEditorRef = {
 };
 
 export const RichTextEditor = forwardRef<TiptapEditorRef, RichTextEditorProps>(
-  ({ value, onChange }, ref) => {
+  ({ value, onChange, readonly = false, className }, ref) => {
     const editor = useEditor({
       extensions: [StarterKit],
       immediatelyRender: false,
@@ -33,14 +35,17 @@ export const RichTextEditor = forwardRef<TiptapEditorRef, RichTextEditorProps>(
             "min-h-[120px] w-full rounded-md border border-input bg-transparent px-3 py-2 text-base shadow-xs transition-[color,box-shadow] outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm prose dark:prose-invert max-w-none",
             // Add these specific list styles:
             "[&_ul]:list-disc [&_ul]:pl-5 [&_ol]:list-decimal [&_ol]:pl-5",
+            className,
           ),
         },
       },
       onUpdate: ({ editor }) => {
-        onChange({
-          htmlValue: editor.getHTML(),
-          textValue: editor.getText(),
-        });
+        if (!readonly) {
+          onChange?.({
+            htmlValue: editor.getHTML(),
+            textValue: editor.getText(),
+          });
+        }
       },
     });
 
@@ -51,7 +56,11 @@ export const RichTextEditor = forwardRef<TiptapEditorRef, RichTextEditorProps>(
     if (!editor) return null;
     return (
       <div className="flex flex-col gap-2 w-full">
-        <EditorContent editor={editor} />
+        <EditorContent
+          editor={editor}
+          readOnly={readonly}
+          disabled={readonly}
+        />
       </div>
     );
   },

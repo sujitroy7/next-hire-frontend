@@ -19,6 +19,9 @@ import {
 } from "@/components/ui/card";
 import { RichTextEditor } from "@/components/ui/rich-text-editor";
 import { EditOrgProfileValues } from "../../_utils/schema";
+import { AboutAIGenerator } from "./about-ai-generator";
+import { useRef } from "react";
+import { type Editor } from "@tiptap/react";
 
 interface BasicInfoSectionProps {
   control: Control<EditOrgProfileValues>;
@@ -47,27 +50,49 @@ export function BasicInfoSection({ control }: BasicInfoSectionProps) {
             </FormItem>
           )}
         />
-        <FormField
-          control={control}
-          name="about"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>About</FormLabel>
-              <FormControl>
-                <RichTextEditor
-                  value={field.value || ""}
-                  onChange={({ htmlValue }) => field.onChange(htmlValue)}
-                />
-              </FormControl>
-              <FormDescription className="flex justify-end">
-                {/* Strip HTML tags to accurately count text characters */}
-                {field.value?.replace(/<[^>]*>?/gm, "").length || 0}/500
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+
+        <AboutFormField control={control} />
       </CardContent>
     </Card>
+  );
+}
+
+interface AboutFormFieldProps {
+  control: Control<EditOrgProfileValues>;
+}
+
+export default function AboutFormField({ control }: AboutFormFieldProps) {
+  const editorRef = useRef<{ editor: Editor }>(null);
+
+  return (
+    <FormField
+      control={control}
+      name="about"
+      render={({ field }) => (
+        <FormItem>
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <FormLabel>About</FormLabel>
+            <AboutAIGenerator
+              onAccept={(response) => {
+                field.onChange(response);
+                editorRef.current?.editor.commands.setContent(response);
+              }}
+            />
+          </div>
+          <FormControl>
+            <RichTextEditor
+              ref={editorRef}
+              value={field.value || ""}
+              onChange={({ htmlValue }) => field.onChange(htmlValue)}
+            />
+          </FormControl>
+          <FormDescription className="flex justify-end">
+            {/* Strip HTML tags to accurately count text characters */}
+            {field.value?.replace(/<[^>]*>?/gm, "").length || 0}/500
+          </FormDescription>
+          <FormMessage />
+        </FormItem>
+      )}
+    />
   );
 }

@@ -16,7 +16,18 @@ import { GenerateContentResponse } from "@google/genai";
 interface AIGeneratorPopupProps {
   generatePrompt: (input: string) => string;
   trigger: React.ReactNode;
-  action: (prompt: string) => Promise<GenerateContentResponse | undefined>;
+  action: (prompt: string) => Promise<
+    | {
+        text: string | undefined;
+        data: string | undefined;
+        error?: undefined;
+      }
+    | {
+        error: string;
+        text?: undefined;
+        data?: undefined;
+      }
+  >;
   children?: (props: {
     input: string;
     setInput: React.Dispatch<React.SetStateAction<string>>;
@@ -55,9 +66,11 @@ export function AIGeneratorPopup({
     setIsLoading(true);
     try {
       const response = await action(generatePrompt(input));
-      if (response?.text) {
+      if (response.text) {
         setAiResponse(response.text);
+        return;
       }
+      throw Error(response.error);
     } catch (error) {
       console.error("AI Generation failed:", error);
       setAiResponse("Failed to generate response. Please try again.");

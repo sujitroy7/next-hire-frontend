@@ -13,8 +13,10 @@ export const generateAIResponseAction = async (input: string) => {
       model: "gemini-3-flash-preview",
       contents: input,
     });
-    return response;
+
+    return { text: response.text, data: response?.data };
   } catch (error) {
     console.error("Error Occured :", error);
+    return { error: "Failed to generate response. Please try again." };
   }
 };

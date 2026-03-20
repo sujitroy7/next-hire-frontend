@@ -34,15 +34,16 @@ import {
 import { clientAxios } from "@/lib/axios";
 
 const formSchema = z.object({
-  email: z.string().email("Invalid email address"),
+  email: z.email("Invalid email address"),
   password: z.string().min(1, "Password is required"),
   userType: z.enum(["CANDIDATE", "ORGANIZATION"]),
 });
 
+export type FormData = z.infer<typeof formSchema>;
+
 export default function RegisterPage() {
   const router = useRouter();
-
-  const form = useForm<z.infer<typeof formSchema>>({
+  const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       email: "",
@@ -51,10 +52,9 @@ export default function RegisterPage() {
     },
   });
 
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+  const onSubmit = async (values: FormData) => {
     try {
       const response = await clientAxios.post("/users", values);
-      console.log(response, "test-log");
 
       if (response.status === 201) {
         toast.success("Account created successfully!");

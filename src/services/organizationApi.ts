@@ -56,7 +56,7 @@ export async function createOrgRecruiter(
   axios: AxiosInstance,
   data: { firstName: string; lastName: string; email: string },
 ) {
-  return axios.post<ApiResponse<Recruiter>>(`/users/recruiter`, data);
+  return axios.post<ApiResponse<Recruiter>>(`/users/register/recruiter`, data);
 }
 
 export async function deleteOrgRecruiter(axios: AxiosInstance, userId: string) {

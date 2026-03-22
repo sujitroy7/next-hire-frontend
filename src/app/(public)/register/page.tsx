@@ -54,7 +54,7 @@ export default function RegisterPage() {
 
   const onSubmit = async (values: FormData) => {
     try {
-      const response = await clientAxios.post("/users", values);
+      const response = await clientAxios.post("/users/register", values);
 
       if (response.status === 201) {
         toast.success("Account created successfully!");

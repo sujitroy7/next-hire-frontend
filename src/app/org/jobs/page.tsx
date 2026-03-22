@@ -21,7 +21,7 @@ interface Props {
 }
 
 export default async function OrgJobsPage(props: Props) {
-  const { userRole } = await getSession();
+  const session = await getSession();
   const { search, status, page } = jobsSearchParamsCache.parse(
     await (props.searchParams || Promise.resolve({})),
   );
@@ -52,7 +52,7 @@ export default async function OrgJobsPage(props: Props) {
             pipeline.
           </p>
         </div>
-        {userRole === "RECRUITER" && (
+        {session?.userRole === "RECRUITER" && (
           <Button size="lg" className="shadow-sm">
             <Plus className="mr-2 h-5 w-5" /> Add Job
           </Button>

@@ -25,8 +25,8 @@ interface PageProps {
 
 export default async function CandidateProfilePage({ params }: PageProps) {
   const { id } = await params;
-  const { userId } = await getSession();
-  const isProfileOwner = userId === id;
+  const session = await getSession();
+  const isProfileOwner = session?.userId === id;
 
   let data;
   try {

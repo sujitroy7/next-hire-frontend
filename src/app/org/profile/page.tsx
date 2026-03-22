@@ -2,11 +2,11 @@ import { getSession } from "@/lib/auth";
 import { redirect } from "next/navigation";
 
 export default async function page() {
-  const { userId, userRole } = await getSession();
+  const session = await getSession();
 
-  if (userRole !== "ORGANIZATION") {
+  if (session?.userRole !== "ORGANIZATION") {
     redirect("/unauthorized");
   }
 
-  redirect(`/org/profile/${userId}`);
+  redirect(`/org/profile/${session.userId}`);
 }

@@ -18,8 +18,8 @@ interface Props {
 
 export default async function EditOrganizationProfilePage({ params }: Props) {
   const { id: profileId } = await params;
-  const { userId } = await getSession();
-  const isProfileOwner = userId === profileId;
+  const session = await getSession();
+  const isProfileOwner = session?.userId === profileId;
   let status: number | null = null;
 
   if (!isProfileOwner) {
@@ -52,7 +52,7 @@ export default async function EditOrganizationProfilePage({ params }: Props) {
         <EditOrgProfileForm
           initialData={!data ? data : formSchema.parse(data)}
           isNewProfile={status === 404}
-          userId={userId}
+          userId={session?.userId}
         />
       </div>
     </div>

@@ -2,11 +2,15 @@ import { getSession } from "@/lib/auth";
 import { redirect } from "next/navigation";
 
 export default async function page() {
-  const { userId, userRole } = await getSession();
+  const session = await getSession();
 
-  if (userRole !== "CANDIDATE") {
+  if (!session) {
+    redirect("/login");
+  }
+
+  if (session?.userRole !== "CANDIDATE") {
     redirect("/unauthorized");
   }
 
-  redirect(`/candidate/profile/${userId}`);
+  redirect(`/candidate/profile/${session?.userId}`);
 }

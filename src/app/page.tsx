@@ -3,10 +3,11 @@ import { redirectionPages } from "@/constants/redirects";
 import { redirect } from "next/navigation";
 
 export default async function Home() {
-  try {
-    const { userRole } = await getSession();
-    redirect(redirectionPages[userRole]);
-  } catch {
-    redirect("/login");
+  const session = await getSession();
+
+  if (!session) {
+    redirect("/login?reload=true");
   }
+
+  redirect(redirectionPages[session.userRole]);
 }

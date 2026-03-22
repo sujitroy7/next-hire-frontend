@@ -1,15 +1,21 @@
 import { USER_ROLES } from "@/constants/users";
 import { headers } from "next/headers";
 import { cache } from "react";
-import { Session } from "@/types/auth";
+import { Session, UserRole } from "@/types/auth";
 
-export const getSession = cache(async () => {
+export const getSession = cache(async (): Promise<Session | null> => {
   const headersList = await headers();
   const userId = headersList.get("x-user-id");
-  const userRole = headersList.get("x-user-role") as any;
+  const userRoleString = headersList.get("x-user-role");
 
-  if (!userId || !userRole || !USER_ROLES.includes(userRole)) {
-    throw new Error("Unauthorized");
+  if (!userId || !userRoleString) {
+    return null;
+  }
+
+  const userRole = userRoleString as UserRole;
+
+  if (!USER_ROLES.includes(userRole)) {
+    return null;
   }
 
   const session: Session = { userId, userRole };

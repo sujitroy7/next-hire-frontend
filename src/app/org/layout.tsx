@@ -9,11 +9,12 @@ export default async function OrgLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const { userRole } = await getSession();
+  const session = await getSession();
+
   return (
     <div className="flex h-screen overflow-hidden bg-background">
       <Suspense fallback={null}>
-        {userRole === "ORGANIZATION" && <OrgSidebar />}
+        {session?.userRole === "ORGANIZATION" && <OrgSidebar />}
       </Suspense>
       <main className="flex-1 overflow-y-auto">{children}</main>
     </div>

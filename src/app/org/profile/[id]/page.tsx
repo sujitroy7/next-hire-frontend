@@ -15,8 +15,8 @@ export default async function OrganizationProfilePage({
   params: Promise<{ id: string }>;
 }) {
   const { id: profileId } = await params;
-  const { userId } = await getSession();
-  const isProfileOwner = userId === profileId;
+  const session = await getSession();
+  const isProfileOwner = session?.userId === profileId;
 
   let data;
   try {
@@ -30,7 +30,7 @@ export default async function OrganizationProfilePage({
     if (isAxiosError(error)) {
       const status = error.response?.status;
       if (status === 404) {
-        if (profileId === userId) {
+        if (profileId === session?.userId) {
           redirect(`/org/profile/${profileId}/edit` as any);
         }
         notFound();

@@ -11,7 +11,8 @@ export default async function RecruiterLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const { userRole } = await getSession();
+  const session = await getSession();
+  const userRole = session?.userRole;
   return (
     <div className="flex h-screen overflow-hidden bg-background">
       <Suspense fallback={null}>

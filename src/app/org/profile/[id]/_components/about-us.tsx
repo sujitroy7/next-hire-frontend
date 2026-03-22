@@ -12,12 +12,12 @@ export default function AboutUs({ about }: Props) {
           <CardTitle className="text-xl">About Us</CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-muted-foreground leading-relaxed whitespace-pre-wrap">
+          <div className="text-muted-foreground leading-relaxed whitespace-pre-wrap">
             <div
               className="rich-text"
               dangerouslySetInnerHTML={{ __html: about }}
             />
-          </p>
+          </div>
         </CardContent>
       </Card>
     </div>

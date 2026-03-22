@@ -29,7 +29,7 @@ export default async function Header({
 
       <div className="absolute -bottom-12 left-8 flex items-end space-x-6">
         <Avatar className="h-32 w-32 border-4 border-background shadow-sm">
-          <AvatarImage src="/placeholder-org-logo.png" alt={name} />
+          {/* <AvatarImage src="/placeholder-org-logo.png" alt={name} /> */}
           <AvatarFallback className="text-3xl font-bold bg-primary text-primary-foreground">
             {name.substring(0, 2).toUpperCase()}
           </AvatarFallback>

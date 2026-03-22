@@ -15,15 +15,16 @@ export default async function PublicPageLayouts({
 }: {
   children: React.ReactNode;
 }) {
-  const { userRole, userId } = await getSession();
+  const session = await getSession();
+
   return (
     <div className="flex h-screen overflow-hidden bg-background">
       <Suspense>
-        {userRole === "ORGANIZATION" && <OrgSidebar />}
-        {userRole === "RECRUITER" && <RecruiterSidebar />}
+        {session?.userRole === "ORGANIZATION" && <OrgSidebar />}
+        {session?.userRole === "RECRUITER" && <RecruiterSidebar />}
       </Suspense>
       <main className="flex-1 overflow-y-auto">
-        <Suspense>{!userId && <PublicNavbar />}</Suspense>
+        <Suspense>{!session?.userId && <PublicNavbar />}</Suspense>
         {children}
       </main>
     </div>

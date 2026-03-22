@@ -28,7 +28,7 @@ import { useAppDispatch } from "@/store/hooks";
 import { useRouter } from "next/navigation";
 import { redirectionPages } from "@/constants/redirects";
 import { useQueryState } from "nuqs";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 const formSchema = z.object({
   email: z.string().email("Invalid email address"),
@@ -42,6 +42,7 @@ export default function LoginPage() {
   const [reload] = useQueryState("reload");
 
   const dispatch = useAppDispatch();
+  const [error, setError] = useState("");
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -67,7 +68,9 @@ export default function LoginPage() {
       router.replace(redirectionPath as any);
     } catch (error) {
       console.error("Login failed:", error);
-      // handle error
+      if (typeof error === "string") {
+        setError(error);
+      }
     }
   };
 
@@ -124,7 +127,8 @@ export default function LoginPage() {
                 Sign in
               </Button>
             </CardContent>
-            <CardFooter className="justify-center">
+            <CardFooter className="justify-center flex-col">
+              <p className="text-red-600 mb-4">{error}</p>
               <div className="text-sm text-muted-foreground">
                 Don&apos;t have an account?{" "}
                 <Link

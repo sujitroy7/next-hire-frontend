@@ -72,11 +72,20 @@ export default function AddRecruiterDialog({ open, setOpen }: Props) {
           router.refresh();
         }
       } catch (error) {
-        let errorMsg = "An unexpected error occurred.";
-        if (error instanceof AxiosError) {
-          errorMsg = error.response?.data?.message || errorMsg;
+        if (
+          error instanceof AxiosError &&
+          error.response?.data?.errors.some(
+            (err: { path: string }) => err.path == "body.email",
+          )
+        ) {
+          form.setError("email", {
+            message: error.response?.data?.errors.find(
+              (err: { path: string }) => err.path == "body.email",
+            )?.message,
+          });
+        } else {
+          toast.error("An unexpected error occurred.");
         }
-        toast.error(errorMsg);
       }
     });
   };

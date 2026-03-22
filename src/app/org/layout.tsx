@@ -9,8 +9,10 @@ const PublicNavbar = dynamic(
 
 export default async function OrgLayout({
   children,
+  chat,
 }: {
   children: React.ReactNode;
+  chat?: React.ReactNode;
 }) {
   const session = await getSession();
 
@@ -26,6 +28,7 @@ export default async function OrgLayout({
           )}
         </Suspense>
         {children}
+        {session?.userRole === "ORGANIZATION" && chat}
       </main>
     </div>
   );

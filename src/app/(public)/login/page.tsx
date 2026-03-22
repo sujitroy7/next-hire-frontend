@@ -27,16 +27,22 @@ import { userApi } from "@/store/services/userApi";
 import { useAppDispatch } from "@/store/hooks";
 import { useRouter } from "next/navigation";
 import { redirectionPages } from "@/constants/redirects";
+import { useQueryState } from "nuqs";
+import { useEffect } from "react";
 
 const formSchema = z.object({
   email: z.string().email("Invalid email address"),
   password: z.string().min(1, "Password is required"),
 });
 
+type FormData = z.infer<typeof formSchema>;
+
 export default function LoginPage() {
   const router = useRouter();
+  const [reload] = useQueryState("reload");
+
   const dispatch = useAppDispatch();
-  const form = useForm<z.infer<typeof formSchema>>({
+  const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       email: "",
@@ -44,7 +50,14 @@ export default function LoginPage() {
     },
   });
 
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+  useEffect(() => {
+    if (reload == "true") {
+      router.replace("/login");
+      router.refresh(); // wipe states by refreshing the page
+    }
+  }, [reload]);
+
+  const onSubmit = async (values: FormData) => {
     try {
       await dispatch(login(values)).unwrap();
       const response = await dispatch(
@@ -54,6 +67,7 @@ export default function LoginPage() {
       router.replace(redirectionPath as any);
     } catch (error) {
       console.error("Login failed:", error);
+      // handle error
     }
   };
 

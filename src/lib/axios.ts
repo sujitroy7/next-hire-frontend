@@ -33,15 +33,21 @@ clientAxios.interceptors.response.use(
       _retry: boolean;
     };
 
-    const isRefreshTokenApi = error.config?.url?.includes(
+    const excludedApis = [
       "/auth/refresh-token",
+      "/auth/login",
+      "/users/register",
+    ];
+
+    const isExludedApi = excludedApis.some((url) =>
+      error.config?.url?.includes(url),
     );
 
     // Only retry once to avoid infinite loops
     if (
       error.response?.status === 401 &&
       !originalRequest._retry &&
-      !isRefreshTokenApi
+      !isExludedApi
     ) {
       originalRequest._retry = true;
 

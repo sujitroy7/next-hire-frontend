@@ -57,7 +57,7 @@ export async function middleware(request: NextRequest) {
   // If NOT public, enforce Authentication
   const refreshToken = request.cookies.get("refresh-token")?.value;
   if (!userId || !refreshToken) {
-    return NextResponse.redirect(new URL("/login", request.url));
+    return NextResponse.redirect(new URL("/login?reload=true", request.url));
   }
 
   // Role-Based Access Control (RBAC) Logic

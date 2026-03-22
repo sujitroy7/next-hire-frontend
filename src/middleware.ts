@@ -3,20 +3,7 @@ import type { NextRequest } from "next/server";
 import { jwtVerify, type JWTVerifyResult } from "jose";
 import { UserRoleEnum, type PermissionsTokenPayload } from "@/types/auth";
 import { envRequired } from "./lib/envRequired";
-
-// 1. Define Public Routes (The Whitelist)
-const publicRoutes = [
-  /^\/$/, // Landing Page
-  /^\/login$/, // Login
-  /^\/register$/, // Register
-  /^\/candidate\/profile\/[^/]+$/, // Matches /candidate/profile/123, but NOT /candidate/profile/123/edit
-  /^\/org\/profile\/[^/]+$/, // Matches /org/profile/123, but NOT /org/profile/123/edit
-  /^\/jobs\/view\/[^/]+$/, // Matches /jobs/view/123, but NOT /jobs/view/123/edit
-  /^\/jobs$/, // Matches /jobs
-  /^\/about$/, // Matches /about
-  /^\/robots.txt$/, // Matches /robots.txt
-  /^\/sitemap.xml$/, // Matches /sitemap.xml
-];
+import { publicRoutes } from "./lib/routes";
 
 export async function middleware(request: NextRequest) {
   const requestHeaders = new Headers(request.headers);

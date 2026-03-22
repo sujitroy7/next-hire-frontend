@@ -29,6 +29,7 @@ import { useRouter } from "next/navigation";
 import { redirectionPages } from "@/constants/redirects";
 import { useQueryState } from "nuqs";
 import { useEffect, useState } from "react";
+import { refreshTokenLoop } from "@/lib/refresh-token";
 
 const formSchema = z.object({
   email: z.string().email("Invalid email address"),
@@ -61,6 +62,7 @@ export default function LoginPage() {
   const onSubmit = async (values: FormData) => {
     try {
       await dispatch(login(values)).unwrap();
+      await refreshTokenLoop();
       const response = await dispatch(
         userApi.endpoints.getMe.initiate(),
       ).unwrap();

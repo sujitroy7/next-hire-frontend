@@ -11,8 +11,8 @@ export const refreshAccessToken = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       // Backend reads refreshToken from cookie and sets new tokens in cookies
-      await clientAxios.post("/auth/refresh-token");
-      return true; // Success - tokens are in cookies
+      const response = await clientAxios.post("/auth/refresh-token");
+      return response.data.expiresAt as number; // Success - tokens are in cookies
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message || "Refresh failed");
     }

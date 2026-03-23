@@ -3,7 +3,7 @@ import dynamic from "next/dynamic";
 import { Suspense } from "react";
 
 const RecruiterSidebar = dynamic(
-  () => import("@/components/features/recruiter-sidebar"),
+  () => import("@/components/shared/recruiter-sidebar"),
 );
 
 export default async function RecruiterLayout({

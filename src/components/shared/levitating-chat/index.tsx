@@ -1,8 +1,8 @@
 "use client";
 
-import { useChatLogic } from "./levitating-chat/use-chat-logic";
-import { ChatToggleButton } from "./levitating-chat/chat-toggle-button";
-import { ChatWindow } from "./levitating-chat/chat-window";
+import { useChatLogic } from "./use-chat-logic";
+import { ChatToggleButton } from "./chat-toggle-button";
+import { ChatWindow } from "./chat-window";
 
 export function LevitatingChat() {
   const { isOpen, setIsOpen } = useChatLogic();

@@ -2,10 +2,8 @@ import { getSession } from "@/lib/auth";
 import dynamic from "next/dynamic";
 import { Suspense } from "react";
 
-const OrgSidebar = dynamic(() => import("@/components/features/org-sidebar"));
-const PublicNavbar = dynamic(
-  () => import("@/components/features/public-navbar"),
-);
+const OrgSidebar = dynamic(() => import("@/components/shared/org-sidebar"));
+const PublicNavbar = dynamic(() => import("@/components/shared/public-navbar"));
 
 export default async function OrgLayout({
   children,

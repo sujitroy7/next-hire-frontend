@@ -2,12 +2,10 @@ import { getSession } from "@/lib/auth";
 import dynamic from "next/dynamic";
 import { Suspense } from "react";
 
-const PublicNavbar = dynamic(
-  () => import("@/components/features/public-navbar"),
-);
-const OrgSidebar = dynamic(() => import("@/components/features/org-sidebar"));
+const PublicNavbar = dynamic(() => import("@/components/shared/public-navbar"));
+const OrgSidebar = dynamic(() => import("@/components/shared/org-sidebar"));
 const RecruiterSidebar = dynamic(
-  () => import("@/components/features/recruiter-sidebar"),
+  () => import("@/components/shared/recruiter-sidebar"),
 );
 
 export default async function PublicPageLayouts({

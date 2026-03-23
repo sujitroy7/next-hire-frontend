@@ -4,7 +4,6 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  // DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
@@ -14,6 +13,7 @@ import { useRouter } from "next/navigation";
 
 export default function JobActionsDropdown({ job }: { job: Job }) {
   const router = useRouter();
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -30,10 +30,12 @@ export default function JobActionsDropdown({ job }: { job: Job }) {
           <Eye className="mr-2 h-4 w-4" />
           View Details
         </DropdownMenuItem>
-        {/* <DropdownMenuItem onClick={() => console.log("Edit", job.id)}>
+        <DropdownMenuItem
+          onClick={() => router.push(`/recruiter/jobs/${job.id}/edit`)}
+        >
           <Edit className="mr-2 h-4 w-4" />
-          Edit Job
-        </DropdownMenuItem> */}
+          Edit Details
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );

@@ -8,16 +8,14 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import dynamic from "next/dynamic";
 import { Suspense } from "react";
-
-const JobActionsDropdown = dynamic(() => import("./job-actions-dropdown"), {});
 
 interface JobsTableProps {
   data: Job[];
+  renderActions?: (job: Job) => React.ReactNode;
 }
 
-export function JobsTable({ data }: JobsTableProps) {
+export function JobsTable({ data, renderActions }: JobsTableProps) {
   return (
     <div className="rounded-xl border bg-card text-card-foreground shadow-sm overflow-hidden">
       <Table>
@@ -74,13 +72,7 @@ export function JobsTable({ data }: JobsTableProps) {
                   <span className="font-medium">{job.applicants ?? 0}</span>
                 </TableCell>
                 <TableCell className="py-4 pr-6 text-right">
-                  <Suspense
-                    fallback={
-                      <div className="h-8 w-8 ml-auto animate-pulse bg-muted rounded-md" />
-                    }
-                  >
-                    <JobActionsDropdown job={job} />
-                  </Suspense>
+                  {renderActions ? renderActions(job) : null}
                 </TableCell>
               </TableRow>
             ))

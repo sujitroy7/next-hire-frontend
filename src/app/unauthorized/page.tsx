@@ -1,22 +1,16 @@
-"use client";
-
-import * as React from "react";
 import { ShieldAlert } from "lucide-react";
-import { useRouter } from "next/navigation";
-
-import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
+  CardFooter,
 } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 export default function UnauthorizedPage() {
-  const router = useRouter();
-
   return (
     <div className="flex min-h-screen w-full items-center justify-center bg-gray-50 p-4">
       <Card className="w-full max-w-md shadow-md">
@@ -35,15 +29,8 @@ export default function UnauthorizedPage() {
         </CardHeader>
         <CardContent />
         <CardFooter className="flex flex-col gap-2 sm:flex-row sm:justify-center">
-          <Button className="w-full sm:w-auto" onClick={() => router.push("/")}>
-            Go to Dashboard
-          </Button>
-          <Button
-            variant="outline"
-            className="w-full sm:w-auto"
-            onClick={() => router.back()}
-          >
-            Go Back
+          <Button className="w-full sm:w-auto" asChild>
+            <Link href="/dashboard">Go to Dashboard</Link>
           </Button>
         </CardFooter>
       </Card>

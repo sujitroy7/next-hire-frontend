@@ -4,6 +4,7 @@
  * These routes are accessible to everyone, even when the user is not logged in.
  */
 export const publicRoutes = [
+  /^\/unauthorized$/, // Unauthorized Page
   /^\/$/, // Landing Page
   /^\/login$/, // Login
   /^\/register$/, // Register

@@ -1,5 +1,5 @@
-import { JobsFilters } from "@/components/jobs/jobs-filters";
-import { JobsTableSkeleton } from "@/components/jobs/jobs-table-skeleton";
+import { JobsFilters } from "@/app/org/jobs/_components/jobs-filters";
+import { JobsTableSkeleton } from "@/app/org/jobs/_components/jobs-table-skeleton";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -14,7 +14,7 @@ import { Suspense } from "react";
 import { jobsSearchParamsCache } from "@/lib/searchParams";
 import { getOrganizationJobs } from "@/services/organizationApi";
 import { serverAxios } from "@/lib/server-axios";
-import { JobsTable } from "@/components/jobs/jobs-table";
+import { JobsTable } from "./_components/jobs-table";
 
 interface Props {
   searchParams?: Promise<{ search?: string; status?: string; page?: number }>;

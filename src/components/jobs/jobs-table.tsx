@@ -28,6 +28,9 @@ export function JobsTable({ data }: JobsTableProps) {
             <TableHead className="h-12 font-semibold">Type</TableHead>
             <TableHead className="h-12 font-semibold">Status</TableHead>
             <TableHead className="h-12 font-semibold">Posted Date</TableHead>
+            <TableHead className="h-12 font-semibold text-center">
+              Applicants
+            </TableHead>
             <TableHead className="h-12 font-semibold pr-6 text-right">
               <span className="sr-only">Actions</span>
             </TableHead>
@@ -67,6 +70,9 @@ export function JobsTable({ data }: JobsTableProps) {
                       }).format(new Date(job.publishedAt))
                     : "-"}
                 </TableCell>
+                <TableCell className="py-4 text-center">
+                  <span className="font-medium">{job.applicants ?? 0}</span>
+                </TableCell>
                 <TableCell className="py-4 pr-6 text-right">
                   <Suspense
                     fallback={
@@ -81,7 +87,7 @@ export function JobsTable({ data }: JobsTableProps) {
           ) : (
             <TableRow>
               <TableCell
-                colSpan={6}
+                colSpan={7}
                 className="h-32 text-center text-muted-foreground"
               >
                 No jobs found.

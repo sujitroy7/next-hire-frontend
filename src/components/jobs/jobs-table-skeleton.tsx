@@ -29,6 +29,9 @@ export function JobsTableSkeleton() {
             <TableHead className="h-12 font-semibold first:pl-6 last:pr-6 last:text-right">
               Posted Date
             </TableHead>
+            <TableHead className="h-12 font-semibold first:pl-6 last:pr-6 text-center">
+              Applicants
+            </TableHead>
             <TableHead className="h-12 font-semibold first:pl-6 last:pr-6 last:text-right"></TableHead>
           </TableRow>
         </TableHeader>
@@ -49,6 +52,11 @@ export function JobsTableSkeleton() {
               </TableCell>
               <TableCell className="py-4 first:pl-6 last:pr-6 last:text-right">
                 <Skeleton className="h-5 w-28" />
+              </TableCell>
+              <TableCell className="py-4 first:pl-6 last:pr-6 text-center">
+                <div className="flex justify-center">
+                  <Skeleton className="h-5 w-8" />
+                </div>
               </TableCell>
               <TableCell className="py-4 first:pl-6 last:pr-6 last:text-right">
                 <div className="flex justify-end pr-2">

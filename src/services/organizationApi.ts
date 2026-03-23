@@ -76,3 +76,16 @@ export async function getOrganizationJobs(
     { params: { page, limit, search, status } },
   );
 }
+
+interface GetRecruiterJobsParams extends PaginationParams {
+  search?: string | null;
+  status?: string;
+}
+export async function getRecruiterJobs(
+  axios: AxiosInstance,
+  { page, limit, search, status }: GetRecruiterJobsParams,
+) {
+  return axios.get<ApiResponse<PaginationResponse<Job[]>>>(`/recruiter/jobs`, {
+    params: { page, limit, search, status },
+  });
+}

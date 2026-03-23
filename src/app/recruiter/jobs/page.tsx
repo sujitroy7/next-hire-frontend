@@ -10,11 +10,15 @@ import { getSession } from "@/lib/auth";
 import { Plus } from "lucide-react";
 import { Suspense } from "react";
 import { jobsSearchParamsCache } from "@/lib/searchParams";
-import { getOrganizationJobs } from "@/services/organizationApi";
+import {
+  getOrganizationJobs,
+  getRecruiterJobs,
+} from "@/services/organizationApi";
 import { serverAxios } from "@/lib/server-axios";
-import { JobsTable } from "@/app/org/jobs/_components/jobs-table";
-import { JobsFilters } from "@/app/org/jobs/_components/jobs-filters";
-import { JobsTableSkeleton } from "@/app/org/jobs/_components/jobs-table-skeleton";
+import { JobsTable } from "@/components/features/jobs/jobs-table/jobs-table";
+import { JobsFilters } from "@/components/features/jobs/jobs-table/jobs-filters";
+import { JobsTableSkeleton } from "@/components/features/jobs/jobs-table/jobs-table-skeleton";
+import { RecruiterJobActions } from "./_components/recruiter-job-actions";
 
 interface Props {
   searchParams?: Promise<{ search?: string; status?: string; page?: number }>;
@@ -27,7 +31,7 @@ export default async function RecruiterJobsPage(props: Props) {
   );
   let data;
   try {
-    const response = await getOrganizationJobs(serverAxios, {
+    const response = await getRecruiterJobs(serverAxios, {
       limit: 10,
       search,
       status: status ?? undefined,
@@ -73,7 +77,15 @@ export default async function RecruiterJobsPage(props: Props) {
             <JobsFilters />
           </Suspense>
           <Suspense key={suspenseKey} fallback={<JobsTableSkeleton />}>
-            <JobsTable data={data || []} />
+            <JobsTable
+              data={data || []}
+              renderActions={(job) => (
+                <RecruiterJobActions
+                  job={job}
+                  isOwner={job.recruiterId === session?.userId}
+                />
+              )}
+            />
           </Suspense>
         </CardContent>
       </Card>

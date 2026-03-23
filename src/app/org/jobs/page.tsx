@@ -12,9 +12,10 @@ import { Suspense } from "react";
 import { jobsSearchParamsCache } from "@/lib/searchParams";
 import { getOrganizationJobs } from "@/services/organizationApi";
 import { serverAxios } from "@/lib/server-axios";
-import { JobsTable } from "./_components/jobs-table";
-import { JobsFilters } from "./_components/jobs-filters";
-import { JobsTableSkeleton } from "./_components/jobs-table-skeleton";
+import { JobsTable } from "@/components/features/jobs/jobs-table/jobs-table";
+import { JobsFilters } from "@/components/features/jobs/jobs-table/jobs-filters";
+import { JobsTableSkeleton } from "@/components/features/jobs/jobs-table/jobs-table-skeleton";
+import { OrgJobActions } from "./_components/org-job-actions";
 
 interface Props {
   searchParams?: Promise<{ search?: string; status?: string; page?: number }>;
@@ -73,7 +74,10 @@ export default async function OrgJobsPage(props: Props) {
             <JobsFilters />
           </Suspense>
           <Suspense key={suspenseKey} fallback={<JobsTableSkeleton />}>
-            <JobsTable data={data || []} />
+            <JobsTable
+              data={data || []}
+              renderActions={(job) => <OrgJobActions job={job} />}
+            />
           </Suspense>
         </CardContent>
       </Card>

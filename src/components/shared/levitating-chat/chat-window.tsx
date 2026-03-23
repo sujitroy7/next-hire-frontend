@@ -11,8 +11,6 @@ interface ChatWindowProps {
 export function ChatWindow({ isOpen, onClose }: ChatWindowProps) {
   return (
     <div
-      // @ts-ignore
-      inert={!isOpen ? "" : undefined}
       className={`origin-bottom-right transition-all duration-300 ease-out absolute bottom-0 right-0 ${
         isOpen
           ? "opacity-100 scale-100 translate-y-0 pointer-events-auto mb-16"

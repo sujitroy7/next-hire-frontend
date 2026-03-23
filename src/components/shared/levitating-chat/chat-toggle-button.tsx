@@ -9,8 +9,6 @@ interface ChatToggleButtonProps {
 export function ChatToggleButton({ isOpen, onOpen }: ChatToggleButtonProps) {
   return (
     <div
-      // @ts-ignore
-      inert={isOpen ? "" : undefined}
       className={`transition-all duration-300 ease-out origin-center ${
         isOpen
           ? "opacity-0 scale-50 pointer-events-none"

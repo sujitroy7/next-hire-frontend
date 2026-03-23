@@ -101,6 +101,7 @@ export default function LoginPage() {
                       <Input
                         type="email"
                         placeholder="m@example.com"
+                        autoComplete="off"
                         {...field}
                       />
                     </FormControl>
@@ -118,6 +119,7 @@ export default function LoginPage() {
                       <Input
                         type="password"
                         placeholder="Enter password"
+                        autoComplete="off"
                         {...field}
                       />
                     </FormControl>

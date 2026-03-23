@@ -95,6 +95,7 @@ export default function RegisterPage() {
                       <Input
                         type="email"
                         placeholder="m@example.com"
+                        autoComplete="off"
                         {...field}
                       />
                     </FormControl>
@@ -114,6 +115,7 @@ export default function RegisterPage() {
                       <Input
                         type="password"
                         placeholder="Enter password"
+                        autoComplete="new-password"
                         {...field}
                       />
                     </FormControl>

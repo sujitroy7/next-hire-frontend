@@ -63,10 +63,16 @@ export const createJobSchema = baseJobSchema
   .extend({
     publishImmediately: z.boolean().default(true),
   })
-  .refine((data) => {}, {
-    message: "salaryMin cannot be greater than salaryMax",
-    path: ["salaryMin"],
-  });
+  .refine(
+    (data) => {
+      if (!data.salaryMin || !data.salaryMax) return true;
+      return Number(data.salaryMin) <= Number(data.salaryMax);
+    },
+    {
+      message: "salaryMin cannot be greater than salaryMax",
+      path: ["salaryMin"],
+    },
+  );
 
 export type CreateJobValues = z.infer<typeof createJobSchema>;
 

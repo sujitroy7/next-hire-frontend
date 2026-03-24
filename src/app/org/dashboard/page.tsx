@@ -133,12 +133,6 @@ export default function OrganizationDashboardPage() {
             Overview of your organization's hiring metrics and recent activity.
           </p>
         </div>
-        <Button asChild>
-          <Link href="/org/jobs/create">
-            <Plus className="mr-2 h-4 w-4" />
-            Post a Job
-          </Link>
-        </Button>
       </div>
 
       {/* Metrics Grid */}

@@ -34,3 +34,28 @@ export interface CandidateExperiance {
 //   institution: string;
 //   year: string;
 // }
+
+export type ApplicationStatus =
+  | "APPLIED"
+  | "REVIEWING"
+  | "SHORTLISTED"
+  | "REJECTED"
+  | "HIRED";
+
+export interface OrganizationCandidate {
+  id: string;
+  status: ApplicationStatus;
+  appliedAt: string;
+  resumeUrl: string;
+  candidate: {
+    id: string;
+    firstName: string;
+    lastName: string;
+    headline: string | null;
+    publicEmail: string | null;
+  };
+  job: {
+    id: string;
+    title: string;
+  };
+}

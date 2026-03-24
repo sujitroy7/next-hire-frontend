@@ -26,3 +26,14 @@ export const jobsZodSchema = z.object({
   experienceLevel: z.string().optional().nullable().default(null),
   page: z.number().int().positive().optional().default(1),
 });
+
+// ========== Candidates Search Params ==========
+export const candidatesSearchParams = {
+  search: parseAsString,
+  status: parseAsString,
+  page: parseAsInteger.withDefault(1),
+};
+
+export const candidatesSearchParamsCache = createSearchParamsCache(
+  candidatesSearchParams,
+);

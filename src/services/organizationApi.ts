@@ -1,4 +1,5 @@
 import { ApiResponse, PaginationParams, PaginationResponse } from "@/types/api";
+import { OrganizationCandidate } from "@/types/candidate";
 import { Job } from "@/types/job";
 import { OrganizationProfile } from "@/types/organization";
 import { Recruiter } from "@/types/recruiter";
@@ -117,4 +118,20 @@ export async function updateRecruiterJob(
   data: Partial<Job>,
 ) {
   return axios.patch<ApiResponse<Job>>(`/recruiter/jobs/${jobId}`, data);
+}
+
+interface GetOrganizationCandidatesParams extends PaginationParams {
+  search?: string | null;
+  status?: string;
+}
+export async function getOrganizationCandidates(
+  axios: AxiosInstance,
+  { page, limit, search, status }: GetOrganizationCandidatesParams,
+) {
+  return axios.get<ApiResponse<PaginationResponse<OrganizationCandidate[]>>>(
+    `/job-applications/organization/candidates`,
+    {
+      params: { page, limit, search, status },
+    },
+  );
 }

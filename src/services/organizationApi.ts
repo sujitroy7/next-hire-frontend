@@ -89,3 +89,20 @@ export async function getRecruiterJobs(
     params: { page, limit, search, status },
   });
 }
+
+export async function createRecruiterJob(
+  axios: AxiosInstance,
+  data: Partial<Job>,
+) {
+  return axios.post<ApiResponse<Job>>(`/recruiter/jobs`, data);
+}
+
+export async function updateRecruiterJobStatus(
+  axios: AxiosInstance,
+  jobId: string,
+  status: "DRAFT" | "PUBLISHED" | "CLOSED" | "ARCHIVED",
+) {
+  return axios.patch<ApiResponse<Job>>(`/recruiter/jobs/${jobId}/status`, {
+    status,
+  });
+}

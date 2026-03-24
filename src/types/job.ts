@@ -4,6 +4,7 @@ export type EmploymentType =
   | "FULL_TIME"
   | "PART_TIME"
   | "CONTRACT"
+  | "CONTRACTUAL"
   | "FREELANCE"
   | "INTERNSHIP";
 export type ExperienceLevel =
@@ -55,7 +56,6 @@ export interface Job {
   externalApplyUrl: string | null;
 
   status: JobStatus;
-  isActive: boolean;
   publishedAt: string | null;
   expiresAt: string | null;
   createdAt: string;

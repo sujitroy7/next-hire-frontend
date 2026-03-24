@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 import {
   Card,
   CardContent,
@@ -57,8 +58,10 @@ export default async function RecruiterJobsPage(props: Props) {
           </p>
         </div>
         {session?.userRole === "RECRUITER" && (
-          <Button size="lg" className="shadow-sm">
-            <Plus className="mr-2 h-5 w-5" /> Add Job
+          <Button size="lg" className="shadow-sm" asChild>
+            <Link href="/recruiter/jobs/create">
+              <Plus className="mr-2 h-5 w-5" /> Add Job
+            </Link>
           </Button>
         )}
       </div>

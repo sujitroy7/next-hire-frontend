@@ -1,4 +1,4 @@
-import { CreateJobForm } from "@/components/features/jobs/create-job-form";
+import { CreateJobForm } from "@/app/recruiter/jobs/create/_components/create-job-form";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";

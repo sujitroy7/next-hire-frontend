@@ -61,7 +61,7 @@ export function CreateJobForm() {
       skills: "" as any,
       vacancies: 1,
       externalApplyUrl: "",
-      publishImmediately: true,
+      publishImmediately: false,
     },
   });
 
@@ -79,7 +79,7 @@ export function CreateJobForm() {
       const response = await createRecruiterJob(clientAxios, payload);
 
       if (response.data.status === "success" && response.data.data?.id) {
-        if (payload.isActive) {
+        if (payload.publishImmediately) {
           // The backend creates jobs as DRAFT by default.
           // We need an additional call to update it to PUBLISHED if isActive is true.
           await updateRecruiterJobStatus(

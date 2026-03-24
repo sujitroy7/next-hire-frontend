@@ -27,75 +27,78 @@ import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
-  createJobSchema,
-  CreateJobValues,
+  editJobSchema,
+  EditJobValues,
   EmploymentTypeEnum,
   WorkplaceTypeEnum,
   ExperienceLevelEnum,
   SalaryIntervalEnum,
+  JobStatusEnum,
   CurrencyEnum,
 } from "@/lib/validations/job";
 import {
-  createRecruiterJob,
+  updateRecruiterJob,
   updateRecruiterJobStatus,
 } from "@/services/organizationApi";
 import { clientAxios } from "@/lib/axios";
+import { Job } from "@/types/job";
 
-export function CreateJobForm() {
+interface EditJobFormProps {
+  job: Job;
+}
+
+export function EditJobForm({ job }: EditJobFormProps) {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
 
-  const form = useForm<CreateJobValues>({
-    resolver: zodResolver(createJobSchema) as any,
+  const form = useForm<any>({
+    resolver: zodResolver(editJobSchema) as any,
     defaultValues: {
-      title: "",
-      description: "",
-      department: "",
-      location: "",
-      workplaceType: "ON_SITE",
-      employmentType: "FULL_TIME",
-      experienceLevel: undefined,
-      currency: "USD",
-      salaryMin: "",
-      salaryMax: "",
-      salaryInterval: undefined,
-      skills: "" as any,
-      vacancies: 1,
-      externalApplyUrl: "",
-      publishImmediately: false,
+      title: job.title || "",
+      description: job.description || "",
+      department: job.department || "",
+      location: job.location || "",
+      workplaceType: job.workplaceType || "ON_SITE",
+      employmentType: job.employmentType || "FULL_TIME",
+      experienceLevel: job.experienceLevel || undefined,
+      currency: job.currency || "USD",
+      salaryMin: job.salaryMin ? job.salaryMin.toString() : "",
+      salaryMax: job.salaryMax ? job.salaryMax.toString() : "",
+      salaryInterval: (job.salaryInterval as any) || undefined,
+      skills: job.skills ? job.skills.join(", ") : ("" as any),
+      vacancies: job.vacancies || 1,
+      externalApplyUrl: job.externalApplyUrl || "",
+      status:
+        job.status === "DRAFT"
+          ? "PUBLISHED"
+          : (job.status as "PUBLISHED" | "CLOSED"),
     },
   });
 
-  async function onSubmit(data: CreateJobValues) {
+  async function onSubmit(data: EditJobValues) {
     try {
       setIsLoading(true);
 
       // Clean up empty strings to undefined for API
+      const { status, ...restData } = data;
       const payload: any = {
-        ...data,
+        ...restData,
         salaryMin: data.salaryMin ? Number(data.salaryMin) : undefined,
         salaryMax: data.salaryMax ? Number(data.salaryMax) : undefined,
       };
 
-      const response = await createRecruiterJob(clientAxios, payload);
+      const response = await updateRecruiterJob(clientAxios, job.id, payload);
 
-      if (response.data.status === "success" && response.data.data?.id) {
-        if (payload.publishImmediately) {
-          // The backend creates jobs as DRAFT by default.
-          // We need an additional call to update it to PUBLISHED if isActive is true.
-          await updateRecruiterJobStatus(
-            clientAxios,
-            response.data.data.id,
-            "PUBLISHED",
-          );
+      if (response.data.status === "success") {
+        if (job.status !== status) {
+          await updateRecruiterJobStatus(clientAxios, job.id, status);
         }
 
-        toast.success("Job created successfully!");
-        form.reset();
+        toast.success("Job updated successfully!");
         router.push("/recruiter/jobs");
         router.refresh();
       } else {
-        toast.error((response.data as any).message || "Failed to create job");
+        toast.error((response.data as any).message || "Failed to update job");
       }
     } catch (error: any) {
       toast.error(
@@ -409,21 +412,28 @@ export function CreateJobForm() {
 
             <FormField
               control={form.control}
-              name="publishImmediately"
+              name="status"
               render={({ field }) => (
-                <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
-                  <div className="space-y-0.5">
-                    <FormLabel className="text-base">Active Status</FormLabel>
-                    <FormDescription>
-                      Publish this job immediately or save it as a draft.
-                    </FormDescription>
-                  </div>
-                  <FormControl>
-                    <Switch
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                    />
-                  </FormControl>
+                <FormItem>
+                  <FormLabel>Job Status</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <FormControl className="w-full">
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select status" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {JobStatusEnum.options.map((status) => (
+                        <SelectItem key={status} value={status}>
+                          {status}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
                 </FormItem>
               )}
             />
@@ -438,7 +448,7 @@ export function CreateJobForm() {
                 Cancel
               </Button>
               <Button type="submit" disabled={isLoading}>
-                {isLoading ? "Creating..." : "Create Job"}
+                {isLoading ? "Updating..." : "Update Job"}
               </Button>
             </div>
           </form>

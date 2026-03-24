@@ -106,3 +106,15 @@ export async function updateRecruiterJobStatus(
     status,
   });
 }
+
+export async function getRecruiterJobById(axios: AxiosInstance, jobId: string) {
+  return axios.get<ApiResponse<Job>>(`/recruiter/jobs/${jobId}`);
+}
+
+export async function updateRecruiterJob(
+  axios: AxiosInstance,
+  jobId: string,
+  data: Partial<Job>,
+) {
+  return axios.patch<ApiResponse<Job>>(`/recruiter/jobs/${jobId}`, data);
+}

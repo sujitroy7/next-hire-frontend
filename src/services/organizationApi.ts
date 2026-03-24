@@ -1,5 +1,10 @@
 import { ApiResponse, PaginationParams, PaginationResponse } from "@/types/api";
 import { OrganizationCandidate } from "@/types/candidate";
+import {
+  DashboardRecentJob,
+  OrgDashboardStats,
+  RecentActivityItem,
+} from "@/types/dashboard";
 import { Job } from "@/types/job";
 import { OrganizationProfile } from "@/types/organization";
 import { Recruiter } from "@/types/recruiter";
@@ -133,5 +138,35 @@ export async function getOrganizationCandidates(
     {
       params: { page, limit, search, status },
     },
+  );
+}
+
+export async function getOrganizationDashboardStats(axios: AxiosInstance) {
+  return axios.get<
+    ApiResponse<{
+      stats: OrgDashboardStats;
+      recentJobs: DashboardRecentJob[];
+    }>
+  >(`/organization/dashboard/stats`);
+}
+
+export async function getOrganizationRecentActivity(axios: AxiosInstance) {
+  return axios.get<ApiResponse<RecentActivityItem[]>>(
+    `/job-applications/organization/recent-activity`,
+  );
+}
+
+export async function getRecruiterDashboardStats(axios: AxiosInstance) {
+  return axios.get<
+    ApiResponse<{
+      stats: OrgDashboardStats;
+      recentJobs: DashboardRecentJob[];
+    }>
+  >(`/recruiter/dashboard/stats`);
+}
+
+export async function getRecruiterRecentActivity(axios: AxiosInstance) {
+  return axios.get<ApiResponse<RecentActivityItem[]>>(
+    `/job-applications/recruiter/recent-activity`,
   );
 }

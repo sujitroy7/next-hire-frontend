@@ -1,10 +1,8 @@
-import Link from "next/link";
 import {
   Briefcase,
   Users,
   Calendar,
   CheckCircle,
-  Plus,
   MoreHorizontal,
 } from "lucide-react";
 
@@ -26,101 +24,94 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { serverAxios } from "@/lib/server-axios";
+import {
+  getOrganizationDashboardStats,
+  getOrganizationRecentActivity,
+} from "@/services/organizationApi";
+import {
+  OrgDashboardStats,
+  DashboardRecentJob,
+  RecentActivityItem,
+} from "@/types/dashboard";
 
-const stats = [
-  {
-    title: "Total Jobs",
-    value: "12",
-    description: "+2 from last month",
-    icon: Briefcase,
-  },
-  {
-    title: "Active Applications",
-    value: "148",
-    description: "+18 from last week",
-    icon: Users,
-  },
-  {
-    title: "Interviews Scheduled",
-    value: "24",
-    description: "+4 for this week",
-    icon: Calendar,
-  },
-  {
-    title: "Hires",
-    value: "3",
-    description: "In the last 30 days",
-    icon: CheckCircle,
-  },
-];
+const STATUS_ACTION_MAP: Record<string, string> = {
+  APPLIED: "applied for",
+  REVIEWING: "is being reviewed for",
+  SHORTLISTED: "was shortlisted for",
+  REJECTED: "was rejected for",
+  HIRED: "was hired for",
+};
 
-const recentJobs = [
-  {
-    id: "JOB-101",
-    title: "Senior Frontend Engineer",
-    department: "Engineering",
-    status: "Active",
-    applicants: 45,
-  },
-  {
-    id: "JOB-102",
-    title: "Product Manager",
-    department: "Product",
-    status: "Active",
-    applicants: 32,
-  },
-  {
-    id: "JOB-103",
-    title: "UX Designer",
-    department: "Design",
-    status: "Draft",
-    applicants: 0,
-  },
-  {
-    id: "JOB-104",
-    title: "Marketing Coordinator",
-    department: "Marketing",
-    status: "Closed",
-    applicants: 120,
-  },
-];
+function getInitials(firstName: string, lastName: string): string {
+  return `${firstName.charAt(0)}${lastName.charAt(0)}`.toUpperCase();
+}
 
-const recentActivity = [
-  {
-    id: 1,
-    candidate: "Alice Johnson",
-    action: "applied for",
-    job: "Senior Frontend Engineer",
-    time: "2 hours ago",
-    avatar: "AJ",
-  },
-  {
-    id: 2,
-    candidate: "Michael Smith",
-    action: "completed interview for",
-    job: "Product Manager",
-    time: "4 hours ago",
-    avatar: "MS",
-  },
-  {
-    id: 3,
-    candidate: "Sarah Lee",
-    action: "accepted offer for",
-    job: "Backend Developer",
-    time: "1 day ago",
-    avatar: "SL",
-  },
-  {
-    id: 4,
-    candidate: "David Brown",
-    action: "withdrew application for",
-    job: "UX Designer",
-    time: "2 days ago",
-    avatar: "DB",
-  },
-];
+function formatTimeAgo(dateString: string): string {
+  const now = new Date();
+  const date = new Date(dateString);
+  const diffMs = now.getTime() - date.getTime();
+  const diffMins = Math.floor(diffMs / 60000);
+  const diffHours = Math.floor(diffMs / 3600000);
+  const diffDays = Math.floor(diffMs / 86400000);
 
-export default function OrganizationDashboardPage() {
+  if (diffMins < 1) return "Just now";
+  if (diffMins < 60) return `${diffMins} minute${diffMins > 1 ? "s" : ""} ago`;
+  if (diffHours < 24) return `${diffHours} hour${diffHours > 1 ? "s" : ""} ago`;
+  return `${diffDays} day${diffDays > 1 ? "s" : ""} ago`;
+}
+
+export default async function OrganizationDashboardPage() {
+  let stats: OrgDashboardStats = {
+    totalJobs: 0,
+    activeApplications: 0,
+    interviewsScheduled: 0,
+    hires: 0,
+  };
+  let recentJobs: DashboardRecentJob[] = [];
+  let recentActivity: RecentActivityItem[] = [];
+
+  try {
+    const [dashboardRes, activityRes] = await Promise.all([
+      getOrganizationDashboardStats(serverAxios),
+      getOrganizationRecentActivity(serverAxios),
+    ]);
+
+    if (dashboardRes.data.status === "success") {
+      stats = dashboardRes.data.data.stats;
+      recentJobs = dashboardRes.data.data.recentJobs;
+    }
+
+    if (activityRes.data.status === "success") {
+      recentActivity = activityRes.data.data;
+    }
+  } catch (error) {
+    // Fallback to zero/empty states on error
+  }
+
+  const statCards = [
+    {
+      title: "Total Jobs",
+      value: stats.totalJobs.toString(),
+      icon: Briefcase,
+    },
+    {
+      title: "Active Applications",
+      value: stats.activeApplications.toString(),
+      icon: Users,
+    },
+    {
+      title: "Interviews Scheduled",
+      value: stats.interviewsScheduled.toString(),
+      icon: Calendar,
+    },
+    {
+      title: "Hires",
+      value: stats.hires.toString(),
+      icon: CheckCircle,
+    },
+  ];
+
   return (
     <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
       {/* Header Section */}
@@ -130,14 +121,15 @@ export default function OrganizationDashboardPage() {
             Dashboard
           </h1>
           <p className="mt-2 text-muted-foreground">
-            Overview of your organization's hiring metrics and recent activity.
+            Overview of your organization&apos;s hiring metrics and recent
+            activity.
           </p>
         </div>
       </div>
 
       {/* Metrics Grid */}
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-        {stats.map((stat) => {
+        {statCards.map((stat) => {
           const Icon = stat.icon;
           return (
             <Card key={stat.title}>
@@ -149,9 +141,6 @@ export default function OrganizationDashboardPage() {
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">{stat.value}</div>
-                <p className="text-xs text-muted-foreground">
-                  {stat.description}
-                </p>
               </CardContent>
             </Card>
           );
@@ -170,51 +159,59 @@ export default function OrganizationDashboardPage() {
           </CardHeader>
           <CardContent>
             <div className="overflow-x-auto">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Job Title</TableHead>
-                    <TableHead className="hidden sm:table-cell">
-                      Department
-                    </TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead className="text-right">Applicants</TableHead>
-                    <TableHead className="w-[50px]"></TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {recentJobs.map((job) => (
-                    <TableRow key={job.id}>
-                      <TableCell className="font-medium">{job.title}</TableCell>
-                      <TableCell className="hidden text-muted-foreground sm:table-cell">
-                        {job.department}
-                      </TableCell>
-                      <TableCell>
-                        <Badge
-                          variant={
-                            job.status === "Active"
-                              ? "default"
-                              : job.status === "Draft"
-                                ? "secondary"
-                                : "outline"
-                          }
-                        >
-                          {job.status}
-                        </Badge>
-                      </TableCell>
-                      <TableCell className="text-right">
-                        {job.applicants}
-                      </TableCell>
-                      <TableCell>
-                        <Button variant="ghost" size="icon">
-                          <MoreHorizontal className="h-4 w-4" />
-                          <span className="sr-only">Actions</span>
-                        </Button>
-                      </TableCell>
+              {recentJobs.length > 0 ? (
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Job Title</TableHead>
+                      <TableHead className="hidden sm:table-cell">
+                        Department
+                      </TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead className="text-right">Applicants</TableHead>
+                      <TableHead className="w-[50px]"></TableHead>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+                  </TableHeader>
+                  <TableBody>
+                    {recentJobs.map((job) => (
+                      <TableRow key={job.id}>
+                        <TableCell className="font-medium">
+                          {job.title}
+                        </TableCell>
+                        <TableCell className="hidden text-muted-foreground sm:table-cell">
+                          {job.department || "—"}
+                        </TableCell>
+                        <TableCell>
+                          <Badge
+                            variant={
+                              job.status === "PUBLISHED"
+                                ? "default"
+                                : job.status === "DRAFT"
+                                  ? "secondary"
+                                  : "outline"
+                            }
+                          >
+                            {job.status}
+                          </Badge>
+                        </TableCell>
+                        <TableCell className="text-right">
+                          {job._count.jobApplications}
+                        </TableCell>
+                        <TableCell>
+                          <Button variant="ghost" size="icon">
+                            <MoreHorizontal className="h-4 w-4" />
+                            <span className="sr-only">Actions</span>
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              ) : (
+                <p className="py-6 text-center text-sm text-muted-foreground">
+                  No job postings yet.
+                </p>
+              )}
             </div>
           </CardContent>
         </Card>
@@ -226,27 +223,39 @@ export default function OrganizationDashboardPage() {
             <CardDescription>Latest updates from candidates.</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="space-y-6">
-              {recentActivity.map((activity) => (
-                <div key={activity.id} className="flex items-start gap-4">
-                  <Avatar className="h-9 w-9">
-                    <AvatarFallback>{activity.avatar}</AvatarFallback>
-                  </Avatar>
-                  <div className="space-y-1">
-                    <p className="text-sm font-medium leading-none">
-                      {activity.candidate}{" "}
-                      <span className="font-normal text-muted-foreground">
-                        {activity.action}
-                      </span>{" "}
-                      {activity.job}
-                    </p>
-                    <p className="text-sm text-muted-foreground">
-                      {activity.time}
-                    </p>
+            {recentActivity.length > 0 ? (
+              <div className="space-y-6">
+                {recentActivity.map((activity) => (
+                  <div key={activity.id} className="flex items-start gap-4">
+                    <Avatar className="h-9 w-9">
+                      <AvatarFallback>
+                        {getInitials(
+                          activity.candidate.firstName,
+                          activity.candidate.lastName,
+                        )}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className="space-y-1">
+                      <p className="text-sm font-medium leading-none">
+                        {activity.candidate.firstName}{" "}
+                        {activity.candidate.lastName}{" "}
+                        <span className="font-normal text-muted-foreground">
+                          {STATUS_ACTION_MAP[activity.status] || "applied for"}
+                        </span>{" "}
+                        {activity.job.title}
+                      </p>
+                      <p className="text-sm text-muted-foreground">
+                        {formatTimeAgo(activity.appliedAt)}
+                      </p>
+                    </div>
                   </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            ) : (
+              <p className="py-6 text-center text-sm text-muted-foreground">
+                No recent activity.
+              </p>
+            )}
           </CardContent>
         </Card>
       </div>

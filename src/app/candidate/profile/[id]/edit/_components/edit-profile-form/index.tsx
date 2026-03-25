@@ -18,11 +18,13 @@ import { mapFormValuesToPayload, mapInitialDataToFormValues } from "./utils";
 interface EditProfileFormProps {
   initialData: any;
   candidateId: string;
+  isNewProfile: boolean;
 }
 
 export default function EditProfileForm({
   initialData,
   candidateId,
+  isNewProfile,
 }: EditProfileFormProps) {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -42,21 +44,36 @@ export default function EditProfileForm({
     try {
       const payload = mapFormValuesToPayload(data);
 
-      const response = await clientAxios.patch(
-        `/candidate-profile/${candidateId}`,
-        payload,
-      );
+      if (isNewProfile) {
+        const response = await clientAxios.post(`/candidate-profile`, payload);
 
-      if (response.status !== 200) {
-        throw new Error("Failed to update profile");
+        if (response.status !== 201) {
+          throw new Error("Failed to create profile");
+        }
+
+        toast.success("Profile created successfully!");
+      } else {
+        const response = await clientAxios.patch(
+          `/candidate-profile/${candidateId}`,
+          payload,
+        );
+
+        if (response.status !== 200) {
+          throw new Error("Failed to update profile");
+        }
+
+        toast.success("Profile updated successfully!");
       }
 
-      toast.success("Profile updated successfully!");
       router.refresh();
       router.push(`/candidate/profile/${candidateId}` as any);
     } catch (error) {
-      console.error("Error updating profile:", error);
-      toast.error("Failed to update profile. Please try again.");
+      console.error("Error saving profile:", error);
+      toast.error(
+        isNewProfile
+          ? "Failed to create profile. Please try again."
+          : "Failed to update profile. Please try again.",
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -92,7 +109,7 @@ export default function EditProfileForm({
             ) : (
               <>
                 <Save className="mr-2 h-4 w-4" />
-                Save Changes
+                {isNewProfile ? "Create Profile" : "Save Changes"}
               </>
             )}
           </Button>

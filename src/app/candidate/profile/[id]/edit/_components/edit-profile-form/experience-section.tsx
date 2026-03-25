@@ -123,7 +123,11 @@ export function ExperienceSection({ control }: ExperienceSectionProps) {
                       Start Date <span className="text-destructive">*</span>
                     </FormLabel>
                     <FormControl>
-                      <Input type="date" {...field} value={field.value || ""} />
+                      <Input
+                        type="month"
+                        {...field}
+                        value={field.value || ""}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -137,7 +141,7 @@ export function ExperienceSection({ control }: ExperienceSectionProps) {
                     <FormLabel>End Date</FormLabel>
                     <FormControl>
                       <Input
-                        type="date"
+                        type="month"
                         {...field}
                         value={field.value || ""}
                         disabled={watch(`experiences.${index}.isCurrent`)}

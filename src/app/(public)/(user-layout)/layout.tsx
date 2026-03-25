@@ -2,7 +2,7 @@ import { getSession } from "@/lib/auth";
 import dynamic from "next/dynamic";
 import { Suspense } from "react";
 
-const PublicNavbar = dynamic(() => import("@/components/shared/public-navbar"));
+const PublicNavbar = dynamic(() => import("@/components/shared/common-navbar"));
 const OrgSidebar = dynamic(() => import("@/components/shared/org-sidebar"));
 const RecruiterSidebar = dynamic(
   () => import("@/components/shared/recruiter-sidebar"),

@@ -3,7 +3,7 @@ import dynamic from "next/dynamic";
 import { Suspense } from "react";
 
 const OrgSidebar = dynamic(() => import("@/components/shared/org-sidebar"));
-const PublicNavbar = dynamic(() => import("@/components/shared/public-navbar"));
+const PublicNavbar = dynamic(() => import("@/components/shared/common-navbar"));
 
 export default async function OrgLayout({
   children,

@@ -5,7 +5,7 @@ import { Suspense } from "react";
 const CandidateSidebar = dynamic(
   () => import("@/components/shared/candidate-sidebar"),
 );
-const PublicNavbar = dynamic(() => import("@/components/shared/public-navbar"));
+const PublicNavbar = dynamic(() => import("@/components/shared/common-navbar"));
 
 export default async function CandidateLayout({
   children,

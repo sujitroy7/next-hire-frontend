@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 import dynamic from "next/dynamic";
 
-const PublicNavbar = dynamic(() => import("@/components/shared/public-navbar"));
+const PublicNavbar = dynamic(() => import("@/components/shared/common-navbar"));
 
 export default function PublicPageLayouts({
   children,

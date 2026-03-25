@@ -106,6 +106,29 @@ export function BasicInfoSection({ control }: BasicInfoSectionProps) {
             )}
           />
         </div>
+        <div className="md:col-span-2">
+          <FormField
+            control={control}
+            name="skills"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Skills</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="e.g. React, Node.js, TypeScript"
+                    {...field}
+                    value={field.value || ""}
+                  />
+                </FormControl>
+                <FormDescription>
+                  Comma separated list of your technical and professional
+                  skills.
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
       </CardContent>
     </Card>
   );

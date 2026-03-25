@@ -40,15 +40,6 @@ export default async function CandidateProfilePage({ params }: PageProps) {
     notFound();
   }
 
-  // Placeholder skills (will need to be added to actual data model later)
-  const placeholderSkills = [
-    "React",
-    "Next.js",
-    "TypeScript",
-    "Tailwind CSS",
-    "Node.js",
-  ];
-
   return (
     <div className="container mx-auto px-4 py-8 md:px-6 lg:px-8">
       <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
@@ -163,20 +154,22 @@ export default async function CandidateProfilePage({ params }: PageProps) {
               </CardContent>
             </Card>
 
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">Skills</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="flex flex-wrap gap-2">
-                  {placeholderSkills.map((skill) => (
-                    <Badge key={skill} variant="secondary">
-                      {skill}
-                    </Badge>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
+            {Array.isArray(data.skills) && data.skills.length > 0 && (
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-lg">Skills</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex flex-wrap gap-2">
+                    {data.skills?.map((skill: string) => (
+                      <Badge key={skill} variant="secondary">
+                        {skill}
+                      </Badge>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
           </div>
         </div>
 

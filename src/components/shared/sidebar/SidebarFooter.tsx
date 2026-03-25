@@ -5,12 +5,18 @@ import LogoutButton from "./LogoutButton";
 import { useAuth } from "@/hooks/useAuth";
 import { cn } from "@/lib/utils";
 
-export default function UserFooter({ collapsed }: { collapsed: boolean }) {
+interface SidebarFooterProps {
+  collapsed: boolean;
+  roleLabel: string;
+}
+
+export default function SidebarFooter({
+  collapsed,
+  roleLabel,
+}: SidebarFooterProps) {
   const { user } = useAuth();
   const userEmail = user?.email ?? "";
-  const orgInitials = userEmail
-    ? userEmail.substring(0, 2).toUpperCase()
-    : "OR";
+  const initials = userEmail ? userEmail.substring(0, 2).toUpperCase() : "US";
 
   return (
     <div
@@ -21,15 +27,15 @@ export default function UserFooter({ collapsed }: { collapsed: boolean }) {
     >
       <Avatar className="size-8 shrink-0">
         <AvatarFallback className="text-xs font-semibold bg-sidebar-accent text-sidebar-accent-foreground">
-          {orgInitials}
+          {initials}
         </AvatarFallback>
       </Avatar>
       {!collapsed && (
         <div className="flex-1 min-w-0">
           <p className="text-xs font-medium text-sidebar-foreground truncate">
-            {userEmail || "Organization"}
+            {userEmail || roleLabel}
           </p>
-          <p className="text-[11px] text-muted-foreground">Admin</p>
+          <p className="text-[11px] text-muted-foreground">{roleLabel}</p>
         </div>
       )}
       {!collapsed && <LogoutButton />}

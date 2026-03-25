@@ -1,8 +1,20 @@
-import { cn } from "@/lib/utils";
-import { User } from "lucide-react";
-import { useAuth } from "@/hooks/useAuth";
+"use client";
 
-export default function UserHeader({ collapsed }: { collapsed: boolean }) {
+import { cn } from "@/lib/utils";
+import { useAuth } from "@/hooks/useAuth";
+import { LucideIcon } from "lucide-react";
+
+interface SidebarHeaderProps {
+  collapsed: boolean;
+  icon: LucideIcon;
+  roleLabel: string;
+}
+
+export default function SidebarHeader({
+  collapsed,
+  icon: Icon,
+  roleLabel,
+}: SidebarHeaderProps) {
   const { user } = useAuth();
 
   return (
@@ -13,7 +25,7 @@ export default function UserHeader({ collapsed }: { collapsed: boolean }) {
       )}
     >
       <div className="flex size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground shrink-0">
-        <User className="size-4" />
+        <Icon className="size-4" />
       </div>
       {!collapsed && (
         <div className="min-w-0">
@@ -22,7 +34,7 @@ export default function UserHeader({ collapsed }: { collapsed: boolean }) {
               {user?.fullName}
             </p>
           )}
-          <p className="text-xs text-muted-foreground truncate">Candidate</p>
+          <p className="text-xs text-muted-foreground truncate">{roleLabel}</p>
         </div>
       )}
     </div>

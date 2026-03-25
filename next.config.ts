@@ -13,6 +13,9 @@ const nextConfig: NextConfig = {
   compiler: {
     removeConsole: process.env.NODE_ENV === "production",
   },
+  experimental: {
+    authInterrupts: true,
+  },
 };
 
 const withBundleAnalyzer = require("@next/bundle-analyzer")({

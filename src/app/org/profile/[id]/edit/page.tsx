@@ -3,7 +3,7 @@ import EditOrgProfileForm from "./_components/edit-profile-form";
 import { getSession } from "@/lib/auth";
 import { serverAxios } from "@/lib/server-axios";
 import { getOrganizationProfileById } from "@/services/organizationApi";
-import { redirect } from "next/navigation";
+import { redirect, unauthorized } from "next/navigation";
 import { formSchema } from "./_utils/schema";
 import { isAxiosError } from "axios";
 
@@ -23,7 +23,7 @@ export default async function EditOrganizationProfilePage({ params }: Props) {
   let status: number | null = null;
 
   if (!isProfileOwner) {
-    redirect("/unauthorized" as any);
+    unauthorized();
   }
 
   let data;

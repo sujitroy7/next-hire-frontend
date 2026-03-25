@@ -4,6 +4,7 @@ import { jwtVerify, type JWTVerifyResult } from "jose";
 import { UserRoleEnum, type PermissionsTokenPayload } from "@/types/auth";
 import { envRequired } from "./lib/envRequired";
 import { publicRoutes } from "./lib/routes";
+import { unauthorized } from "next/navigation";
 
 export async function middleware(request: NextRequest) {
   const requestHeaders = new Headers(request.headers);

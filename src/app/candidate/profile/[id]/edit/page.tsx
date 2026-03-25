@@ -1,5 +1,5 @@
 import { serverAxios } from "@/lib/server-axios";
-import { redirect } from "next/navigation";
+import { redirect, unauthorized } from "next/navigation";
 import EditProfileForm from "./_components/edit-profile-form";
 import { Metadata } from "next";
 import { getSession } from "@/lib/auth";
@@ -19,7 +19,7 @@ export default async function EditCandidateProfilePage({ params }: PageProps) {
 
   const session = await getSession();
   if (session?.userId !== id) {
-    redirect("/unauthorized");
+    unauthorized();
   }
 
   let data;

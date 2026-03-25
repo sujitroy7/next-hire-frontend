@@ -1,5 +1,5 @@
 import { getSession } from "@/lib/auth";
-import { redirect } from "next/navigation";
+import { redirect, unauthorized } from "next/navigation";
 
 export default async function page() {
   const session = await getSession();
@@ -9,7 +9,7 @@ export default async function page() {
   }
 
   if (session?.userRole !== "CANDIDATE") {
-    redirect("/unauthorized");
+    unauthorized();
   }
 
   redirect(`/candidate/profile/${session?.userId}`);

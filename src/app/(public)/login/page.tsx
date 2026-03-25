@@ -63,9 +63,12 @@ export default function LoginPage() {
     try {
       await dispatch(login(values)).unwrap();
       await refreshTokenLoop();
-      dispatch(userApi.endpoints.getMe.initiate());
+      const response = await dispatch(
+        userApi.endpoints.getMe.initiate(),
+      ).unwrap();
       form.reset();
-      router.replace("/" as any);
+      const userType = response.data.userType;
+      router.replace(redirectionPages[userType].path);
     } catch (error) {
       console.error("Login failed:", error);
       if (typeof error === "string") {

@@ -1,4 +1,5 @@
 import { Briefcase, Sparkles } from "lucide-react";
+import { EarlyAccessForm } from "@/components/early-access-form";
 
 export default function Home() {
   return (
@@ -26,6 +27,11 @@ export default function Home() {
         We are crafting a revolutionary platform to connect top talent with
         extraordinary opportunities. The future of hiring is almost here.
       </p>
+
+      {/* Early Access Form */}
+      <div className="w-full max-w-md mx-auto mt-4">
+        <EarlyAccessForm />
+      </div>
     </div>
   );
 }

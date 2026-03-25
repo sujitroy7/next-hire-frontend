@@ -16,7 +16,7 @@ import {
   Pencil,
 } from "lucide-react";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { formatDate } from "./edit/_utils";
 
 interface PageProps {
@@ -31,11 +31,11 @@ export default async function CandidateProfilePage({ params }: PageProps) {
   let data;
   try {
     const response = await serverAxios.get(`/candidate-profile/${id}`);
-    if (response.status !== 200) {
-      notFound();
-    }
     data = response.data.data;
-  } catch (error) {
+  } catch (error: any) {
+    if (isProfileOwner && error?.response?.status === 404) {
+      redirect(`/candidate/profile/${id}/edit`);
+    }
     console.error("Failed to fetch candidate profile data", error);
     notFound();
   }

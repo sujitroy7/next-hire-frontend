@@ -9,5 +9,5 @@ export default async function page() {
     redirect("/login");
   }
 
-  redirect(redirectionPages[session.userRole]);
+  redirect(redirectionPages[session.userRole].path);
 }

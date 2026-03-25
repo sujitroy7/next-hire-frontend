@@ -9,5 +9,5 @@ export default async function Home() {
     redirect("/login?reload=true");
   }
 
-  redirect(redirectionPages[session.userRole]);
+  redirect(redirectionPages[session.userRole].path);
 }

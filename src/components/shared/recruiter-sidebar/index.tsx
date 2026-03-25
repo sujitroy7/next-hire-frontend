@@ -13,7 +13,6 @@ import {
   LogOut,
   ChevronLeft,
   ChevronRight,
-  UserCircle,
 } from "lucide-react";
 import { useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
@@ -26,7 +25,6 @@ interface NavItem {
 
 const NAV_ITEMS: NavItem[] = [
   { label: "Dashboard", href: "/recruiter/dashboard", icon: LayoutDashboard },
-  { label: "Profile", href: "/recruiter/profile", icon: UserCircle },
   { label: "Jobs", href: "/recruiter/jobs", icon: Briefcase },
   { label: "Candidates", href: "/recruiter/candidates", icon: Users },
 ];

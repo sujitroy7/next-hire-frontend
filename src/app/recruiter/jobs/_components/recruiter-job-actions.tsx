@@ -7,17 +7,11 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { MoreVertical, Eye, Edit } from "lucide-react";
+import { MoreVertical, Eye, Edit, FileText } from "lucide-react";
 import { Job } from "@/types/job";
 import { useRouter } from "next/navigation";
 
-export function RecruiterJobActions({
-  job,
-  isOwner,
-}: {
-  job: Job;
-  isOwner: boolean;
-}) {
+export function RecruiterJobActions({ job }: { job: Job }) {
   const router = useRouter();
 
   return (
@@ -33,16 +27,20 @@ export function RecruiterJobActions({
           onClick={() => router.push(`/jobs/view/${job.id}` as any)}
         >
           <Eye className="mr-2 h-4 w-4" />
-          View Details
+          Preview
         </DropdownMenuItem>
-        {isOwner && (
-          <DropdownMenuItem
-            onClick={() => router.push(`/recruiter/jobs/${job.id}/edit`)}
-          >
-            <Edit className="mr-2 h-4 w-4" />
-            Edit Details
-          </DropdownMenuItem>
-        )}
+        <DropdownMenuItem
+          onClick={() => router.push(`/recruiter/jobs/${job.id}/edit`)}
+        >
+          <Edit className="mr-2 h-4 w-4" />
+          Edit Details
+        </DropdownMenuItem>
+        <DropdownMenuItem
+          onClick={() => router.push(`/recruiter/jobs/${job.id}/report`)}
+        >
+          <FileText className="mr-2 h-4 w-4" />
+          Job Report
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );

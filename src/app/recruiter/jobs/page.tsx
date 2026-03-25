@@ -11,10 +11,7 @@ import { getSession } from "@/lib/auth";
 import { Plus } from "lucide-react";
 import { Suspense } from "react";
 import { jobsSearchParamsCache } from "@/lib/searchParams";
-import {
-  getOrganizationJobs,
-  getRecruiterJobs,
-} from "@/services/organizationApi";
+import { getRecruiterJobs } from "@/services/organizationApi";
 import { serverAxios } from "@/lib/server-axios";
 import { JobsTable } from "@/components/features/jobs/jobs-table/jobs-table";
 import { JobsFilters } from "@/components/features/jobs/jobs-table/jobs-filters";
@@ -82,12 +79,7 @@ export default async function RecruiterJobsPage(props: Props) {
           <Suspense key={suspenseKey} fallback={<JobsTableSkeleton />}>
             <JobsTable
               data={data || []}
-              renderActions={(job) => (
-                <RecruiterJobActions
-                  job={job}
-                  isOwner={job.recruiterId === session?.userId}
-                />
-              )}
+              renderActions={(job) => <RecruiterJobActions job={job} />}
             />
           </Suspense>
         </CardContent>

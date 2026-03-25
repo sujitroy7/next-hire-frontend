@@ -5,7 +5,7 @@ import { Suspense } from "react";
 const CandidateSidebar = dynamic(
   () => import("@/components/shared/candidate-sidebar"),
 );
-const PublicNavbar = dynamic(() => import("@/components/shared/common-navbar"));
+const CommonNavbar = dynamic(() => import("@/components/shared/common-navbar"));
 
 export default async function CandidateLayout({
   children,
@@ -21,7 +21,7 @@ export default async function CandidateLayout({
       </Suspense>
       <main className="flex-1 overflow-y-auto">
         <Suspense fallback={null}>
-          {(!session || session?.userRole !== "CANDIDATE") && <PublicNavbar />}
+          {(!session || session?.userRole !== "CANDIDATE") && <CommonNavbar />}
         </Suspense>
         {children}
       </main>

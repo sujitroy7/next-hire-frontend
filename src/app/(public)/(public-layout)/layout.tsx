@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 import dynamic from "next/dynamic";
 
-const PublicNavbar = dynamic(() => import("@/components/shared/common-navbar"));
+const CommonNavbar = dynamic(() => import("@/components/shared/common-navbar"));
 
 export default function PublicPageLayouts({
   children,
@@ -12,7 +12,7 @@ export default function PublicPageLayouts({
     <div className="flex h-screen overflow-hidden bg-background">
       <main className="flex-1 overflow-y-auto">
         <Suspense fallback={null}>
-          <PublicNavbar />
+          <CommonNavbar />
         </Suspense>
         {children}
       </main>

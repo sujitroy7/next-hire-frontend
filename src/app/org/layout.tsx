@@ -3,7 +3,7 @@ import dynamic from "next/dynamic";
 import { Suspense } from "react";
 
 const OrgSidebar = dynamic(() => import("@/components/shared/org-sidebar"));
-const PublicNavbar = dynamic(() => import("@/components/shared/common-navbar"));
+const CommonNavbar = dynamic(() => import("@/components/shared/common-navbar"));
 
 export default async function OrgLayout({
   children,
@@ -22,7 +22,7 @@ export default async function OrgLayout({
       <main className="flex-1 overflow-y-auto">
         <Suspense fallback={null}>
           {(!session || session?.userRole !== "ORGANIZATION") && (
-            <PublicNavbar />
+            <CommonNavbar />
           )}
         </Suspense>
         {children}

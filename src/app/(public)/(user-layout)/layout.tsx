@@ -2,7 +2,7 @@ import { getSession } from "@/lib/auth";
 import dynamic from "next/dynamic";
 import { Suspense } from "react";
 
-const PublicNavbar = dynamic(() => import("@/components/shared/common-navbar"));
+const CommonNavbar = dynamic(() => import("@/components/shared/common-navbar"));
 const OrgSidebar = dynamic(() => import("@/components/shared/org-sidebar"));
 const RecruiterSidebar = dynamic(
   () => import("@/components/shared/recruiter-sidebar"),
@@ -22,7 +22,7 @@ export default async function PublicPageLayouts({
         {session?.userRole === "RECRUITER" && <RecruiterSidebar />}
       </Suspense>
       <main className="flex-1 overflow-y-auto">
-        <Suspense>{!session?.userId && <PublicNavbar />}</Suspense>
+        <Suspense>{!session?.userId && <CommonNavbar />}</Suspense>
         {children}
       </main>
     </div>

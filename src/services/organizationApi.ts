@@ -128,15 +128,16 @@ export async function updateRecruiterJob(
 interface GetOrganizationCandidatesParams extends PaginationParams {
   search?: string | null;
   status?: string;
+  jobId?: string | null;
 }
 export async function getOrganizationCandidates(
   axios: AxiosInstance,
-  { page, limit, search, status }: GetOrganizationCandidatesParams,
+  { page, limit, search, status, jobId }: GetOrganizationCandidatesParams,
 ) {
   return axios.get<ApiResponse<PaginationResponse<OrganizationCandidate[]>>>(
     `/job-applications/organization/candidates`,
     {
-      params: { page, limit, search, status },
+      params: { page, limit, search, status, jobId },
     },
   );
 }

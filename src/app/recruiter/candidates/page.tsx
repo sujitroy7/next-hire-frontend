@@ -16,12 +16,17 @@ import { CandidatesTableSkeleton } from "@/components/features/candidates/candid
 import { CandidateActions } from "./_components/candidate-actions";
 
 interface Props {
-  searchParams?: Promise<{ search?: string; status?: string; page?: number }>;
+  searchParams?: Promise<{
+    search?: string;
+    status?: string;
+    jobId?: string;
+    page?: number;
+  }>;
 }
 
 export default async function RecruiterCandidatesPage(props: Props) {
   const session = await getSession();
-  const { search, status, page } = candidatesSearchParamsCache.parse(
+  const { search, status, jobId, page } = candidatesSearchParamsCache.parse(
     await (props.searchParams || Promise.resolve({})),
   );
   let data;
@@ -30,6 +35,7 @@ export default async function RecruiterCandidatesPage(props: Props) {
       limit: 10,
       search,
       status: status ?? undefined,
+      jobId: jobId ?? undefined,
       page,
     });
     if (response.data.status === "success") {
@@ -37,7 +43,7 @@ export default async function RecruiterCandidatesPage(props: Props) {
     }
   } catch (error) {}
 
-  const suspenseKey = Object.entries({ search, status, page }).join("-");
+  const suspenseKey = Object.entries({ search, status, jobId, page }).join("-");
 
   return (
     <div className="flex-1 space-y-8 max-w-7xl mx-auto w-full py-12 px-4 sm:px-6 lg:px-8">

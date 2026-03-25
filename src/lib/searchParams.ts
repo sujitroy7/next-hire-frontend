@@ -31,6 +31,7 @@ export const jobsZodSchema = z.object({
 export const candidatesSearchParams = {
   search: parseAsString,
   status: parseAsString,
+  jobId: parseAsString,
   page: parseAsInteger.withDefault(1),
 };
 

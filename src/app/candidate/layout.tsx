@@ -1,30 +1,19 @@
-import { getSession } from "@/lib/auth";
 import dynamic from "next/dynamic";
 import { Suspense } from "react";
-
-const CandidateSidebar = dynamic(
-  () => import("@/components/shared/candidate-sidebar"),
-);
+import CommonNavbarSkeleton from "@/components/shared/common-navbar/skeleton";
 const CommonNavbar = dynamic(() => import("@/components/shared/common-navbar"));
 
-export default async function CandidateLayout({
+export default function CandidateLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const session = await getSession();
-
   return (
-    <div className="flex h-screen overflow-hidden bg-background">
-      <Suspense fallback={null}>
-        {session?.userRole === "CANDIDATE" && <CandidateSidebar />}
+    <div className="flex min-h-screen flex-col bg-background">
+      <Suspense fallback={<CommonNavbarSkeleton />}>
+        <CommonNavbar />
       </Suspense>
-      <main className="flex-1 overflow-y-auto">
-        <Suspense fallback={null}>
-          {(!session || session?.userRole !== "CANDIDATE") && <CommonNavbar />}
-        </Suspense>
-        {children}
-      </main>
+      <main className="flex-1">{children}</main>
     </div>
   );
 }

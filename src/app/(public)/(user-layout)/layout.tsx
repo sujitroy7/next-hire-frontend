@@ -1,3 +1,4 @@
+import CommonNavbarSkeleton from "@/components/shared/common-navbar/skeleton";
 import { getSession } from "@/lib/auth";
 import dynamic from "next/dynamic";
 import { Suspense } from "react";
@@ -22,7 +23,9 @@ export default async function PublicPageLayouts({
         {session?.userRole === "RECRUITER" && <RecruiterSidebar />}
       </Suspense>
       <main className="flex-1 overflow-y-auto">
-        <Suspense>{!session?.userId && <CommonNavbar />}</Suspense>
+        <Suspense fallback={<CommonNavbarSkeleton />}>
+          {!session?.userId && <CommonNavbar />}
+        </Suspense>
         {children}
       </main>
     </div>

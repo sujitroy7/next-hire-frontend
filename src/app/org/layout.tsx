@@ -1,3 +1,4 @@
+import CommonNavbarSkeleton from "@/components/shared/common-navbar/skeleton";
 import { getSession } from "@/lib/auth";
 import dynamic from "next/dynamic";
 import { Suspense } from "react";
@@ -20,7 +21,7 @@ export default async function OrgLayout({
         {session?.userRole === "ORGANIZATION" && <OrgSidebar />}
       </Suspense>
       <main className="flex-1 overflow-y-auto">
-        <Suspense fallback={null}>
+        <Suspense fallback={<CommonNavbarSkeleton />}>
           {(!session || session?.userRole !== "ORGANIZATION") && (
             <CommonNavbar />
           )}

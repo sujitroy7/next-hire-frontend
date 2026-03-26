@@ -76,7 +76,7 @@ export const createJobSchema = baseJobSchema
 
 export type CreateJobValues = z.infer<typeof createJobSchema>;
 
-export const JobStatusEnum = z.enum(["PUBLISHED", "CLOSED"]);
+export const JobStatusEnum = z.enum(["DRAFT", "PUBLISHED", "CLOSED"]);
 
 export const editJobSchema = baseJobSchema
   .extend({

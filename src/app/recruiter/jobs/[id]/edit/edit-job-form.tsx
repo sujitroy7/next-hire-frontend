@@ -68,10 +68,7 @@ export function EditJobForm({ job }: EditJobFormProps) {
       skills: job.skills ? job.skills.join(", ") : ("" as any),
       vacancies: job.vacancies || 1,
       externalApplyUrl: job.externalApplyUrl || "",
-      status:
-        job.status === "DRAFT"
-          ? "PUBLISHED"
-          : (job.status as "PUBLISHED" | "CLOSED"),
+      status: job.status as "DRAFT" | "PUBLISHED" | "CLOSED",
     },
   });
 
@@ -426,8 +423,15 @@ export function EditJobForm({ job }: EditJobFormProps) {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {JobStatusEnum.options.map((status) => (
-                        <SelectItem key={status} value={status}>
+                      {JobStatusEnum.options.map((status, index) => (
+                        <SelectItem
+                          key={status}
+                          value={status}
+                          disabled={
+                            index <
+                            JobStatusEnum.options.indexOf(job.status as any)
+                          }
+                        >
                           {status}
                         </SelectItem>
                       ))}

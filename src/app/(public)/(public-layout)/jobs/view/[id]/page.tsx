@@ -3,7 +3,7 @@ import { fetchApi } from "@/lib/fetch";
 import { serverAxios } from "@/lib/server-axios";
 import { getOrganizationProfileById } from "@/services/organizationApi";
 import { getJobById } from "@/services/publicApi";
-import { Job } from "@/types/job";
+import { type Job } from "@/types/job";
 import { OrganizationProfile } from "@/types/organization";
 import {
   Briefcase,
@@ -25,7 +25,7 @@ import ContactInfoSidebar from "@/app/org/profile/[id]/_components/contact-info-
 export async function generateStaticParams() {
   const response = await fetchApi("/jobs");
   if (response.status !== "success") return [];
-  const paths = response.data.data.map((job: any) => ({
+  const paths = response.data.data.map((job: Job) => ({
     id: String(job.id),
   }));
   return paths;

@@ -64,4 +64,7 @@ export interface Job {
   organization: JobOrganization;
   recruiter: JobRecruiter;
   applicants?: number;
+  _count: {
+    jobApplications: number;
+  };
 }

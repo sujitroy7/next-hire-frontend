@@ -1,12 +1,5 @@
 import Link from "next/link";
-import {
-  Briefcase,
-  Users,
-  Calendar,
-  CheckCircle,
-  Plus,
-  MoreHorizontal,
-} from "lucide-react";
+import { Briefcase, Users, Calendar, CheckCircle, Plus } from "lucide-react";
 
 import {
   Card,
@@ -26,16 +19,15 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { RecruiterJobActions } from "@/app/recruiter/jobs/_components/recruiter-job-actions";
 import { serverAxios } from "@/lib/server-axios";
 import {
   getRecruiterDashboardStats,
+  getRecruiterJobs,
   getRecruiterRecentActivity,
 } from "@/services/organizationApi";
-import {
-  OrgDashboardStats,
-  DashboardRecentJob,
-  RecentActivityItem,
-} from "@/types/dashboard";
+import { OrgDashboardStats, RecentActivityItem } from "@/types/dashboard";
+import { Job } from "@/types/job";
 
 const STATUS_ACTION_MAP: Record<string, string> = {
   APPLIED: "applied for",
@@ -70,18 +62,22 @@ export default async function RecruiterDashboardPage() {
     interviewsScheduled: 0,
     hires: 0,
   };
-  let recentJobs: DashboardRecentJob[] = [];
+  let recentJobs: Job[] = [];
   let recentActivity: RecentActivityItem[] = [];
 
   try {
-    const [dashboardRes, activityRes] = await Promise.all([
+    const [dashboardRes, jobsRes, activityRes] = await Promise.all([
       getRecruiterDashboardStats(serverAxios),
+      getRecruiterJobs(serverAxios, { page: 1, limit: 5 }),
       getRecruiterRecentActivity(serverAxios),
     ]);
 
     if (dashboardRes.data.status === "success") {
-      stats = dashboardRes.data.data.stats;
-      recentJobs = dashboardRes.data.data.recentJobs;
+      stats = dashboardRes.data.data;
+    }
+
+    if (jobsRes.data.status === "success") {
+      recentJobs = jobsRes.data.data.data;
     }
 
     if (activityRes.data.status === "success") {
@@ -203,13 +199,10 @@ export default async function RecruiterDashboardPage() {
                           </Badge>
                         </TableCell>
                         <TableCell className="text-right">
-                          {job._count.jobApplications}
+                          {job?._count?.jobApplications ?? 0}
                         </TableCell>
                         <TableCell>
-                          <Button variant="ghost" size="icon">
-                            <MoreHorizontal className="h-4 w-4" />
-                            <span className="sr-only">Actions</span>
-                          </Button>
+                          <RecruiterJobActions job={job} />
                         </TableCell>
                       </TableRow>
                     ))}

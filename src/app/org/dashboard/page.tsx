@@ -34,6 +34,7 @@ import {
   DashboardRecentJob,
   RecentActivityItem,
 } from "@/types/dashboard";
+import { Job } from "@/types/job";
 
 const STATUS_ACTION_MAP: Record<string, string> = {
   APPLIED: "applied for",
@@ -68,7 +69,7 @@ export default async function OrganizationDashboardPage() {
     interviewsScheduled: 0,
     hires: 0,
   };
-  let recentJobs: DashboardRecentJob[] = [];
+  let recentJobs: Job[] = [];
   let recentActivity: RecentActivityItem[] = [];
 
   try {
@@ -195,7 +196,7 @@ export default async function OrganizationDashboardPage() {
                           </Badge>
                         </TableCell>
                         <TableCell className="text-right">
-                          {job._count.jobApplications}
+                          {job?._count?.jobApplications}
                         </TableCell>
                         <TableCell>
                           <Button variant="ghost" size="icon">

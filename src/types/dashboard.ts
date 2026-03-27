@@ -5,16 +5,6 @@ export interface OrgDashboardStats {
   hires: number;
 }
 
-export interface DashboardRecentJob {
-  id: string;
-  title: string;
-  department: string | null;
-  status: string;
-  _count: {
-    jobApplications: number;
-  };
-}
-
 export interface RecentActivityItem {
   id: string;
   status: string;

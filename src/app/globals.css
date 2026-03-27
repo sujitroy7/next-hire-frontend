@@ -221,6 +221,9 @@
   body {
     @apply bg-background text-foreground;
   }
+  main {
+    scrollbar-gutter: stable;
+  }
 }
 
 @layer utilities {

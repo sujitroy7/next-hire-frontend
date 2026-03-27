@@ -1,8 +1,7 @@
 import { PublicJobsFilters } from "./_components/public-jobs-filters";
+import { PublicJobsFiltersSkeleton } from "./_components/public-jobs-filters-skeleton";
 import { JobsList } from "./_components/jobs-list";
-import { jobsSearchParamsCache } from "@/lib/searchParams";
-import { getPublicJobs } from "@/services/publicApi";
-import { serverAxios } from "@/lib/server-axios";
+import { Suspense } from "react";
 import { SearchParams } from "nuqs/server";
 
 export default async function JobsPage({
@@ -10,38 +9,6 @@ export default async function JobsPage({
 }: {
   searchParams: Promise<SearchParams>;
 }) {
-  const {
-    search,
-    status,
-    workplaceType,
-    employmentType,
-    experienceLevel,
-    page,
-  } = await jobsSearchParamsCache.parse(searchParams);
-
-  // Filter out nulls to only send defined params
-  const queryParams = Object.fromEntries(
-    Object.entries({
-      search,
-      status: "PUBLISHED", // Always force published for public view
-      workplaceType,
-      employmentType,
-      experienceLevel,
-      page,
-      limit: 10,
-    }).filter(([_, v]) => v != null),
-  );
-
-  let jobs: any[] = [];
-  try {
-    const response = await getPublicJobs(serverAxios, queryParams);
-    if (response.data.status === "success") {
-      jobs = response.data.data.data || [];
-    }
-  } catch (error) {
-    console.error("Error fetching public jobs:", error);
-  }
-
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <div className="mb-8">
@@ -60,14 +27,18 @@ export default async function JobsPage({
             <h2 className="text-lg font-semibold tracking-tight mb-4 text-foreground">
               Filters
             </h2>
-            <PublicJobsFilters />
+            <Suspense fallback={<PublicJobsFiltersSkeleton />}>
+              <PublicJobsFilters />
+            </Suspense>
           </div>
         </div>
 
         {/* Main Content */}
-        <div className="md:col-span-3">
-          <JobsList jobs={jobs} />
-        </div>
+        <Suspense fallback={<div>Loading...</div>}>
+          <div className="md:col-span-3">
+            <JobsList searchParams={searchParams} />
+          </div>
+        </Suspense>
       </div>
     </div>
   );

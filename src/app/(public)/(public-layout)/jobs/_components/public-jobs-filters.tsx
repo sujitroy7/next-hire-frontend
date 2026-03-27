@@ -35,6 +35,10 @@ const EXPERIENCE_MAPPING = [
 export function PublicJobsFilters() {
   const [filters, setFilters] = useQueryStates(jobsSearchParams, {
     shallow: false, // ensures server-side data fetching happens
+    limitUrlUpdates: {
+      method: "debounce",
+      timeMs: 300,
+    },
   });
 
   const clearFilters = () => {
@@ -91,9 +95,9 @@ export function PublicJobsFilters() {
             placeholder="Search jobs..."
             className="pl-9 h-10 w-full bg-white shadow-sm"
             value={filters.search || ""}
-            onChange={(e) =>
-              setFilters({ search: e.target.value || null, page: 1 })
-            }
+            onChange={(e) => {
+              setFilters({ search: e.target.value || null, page: 1 });
+            }}
           />
         </div>
       </div>

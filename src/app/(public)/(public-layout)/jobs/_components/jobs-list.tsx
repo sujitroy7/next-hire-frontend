@@ -1,12 +1,41 @@
-import { Job } from "@/types/job";
 import { JobCard } from "./job-card";
 import { SearchX } from "lucide-react";
+import { jobsSearchParamsCache } from "@/lib/searchParams";
+import { getPublicJobs } from "@/services/publicApi";
+import { serverAxios } from "@/lib/server-axios";
+import { SearchParams } from "nuqs/server";
 
-interface JobsListProps {
-  jobs: Job[];
-}
+export async function JobsList({
+  searchParams,
+}: {
+  searchParams: Promise<SearchParams>;
+}) {
+  const { search, workplaceType, employmentType, experienceLevel, page } =
+    await jobsSearchParamsCache.parse(searchParams);
 
-export function JobsList({ jobs }: JobsListProps) {
+  // Filter out nulls to only send defined params
+  const queryParams = Object.fromEntries(
+    Object.entries({
+      search,
+      status: "PUBLISHED", // Always force published for public view
+      workplaceType,
+      employmentType,
+      experienceLevel,
+      page,
+      limit: 10,
+    }).filter(([_, v]) => v != null),
+  );
+
+  let jobs: any[] = [];
+  try {
+    const response = await getPublicJobs(serverAxios, queryParams);
+    if (response.data.status === "success") {
+      jobs = response.data.data.data || [];
+    }
+  } catch (error) {
+    console.error("Error fetching public jobs:", error);
+  }
+
   if (!jobs || jobs.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center p-12 py-24 text-center bg-card rounded-xl border border-dashed border-border shadow-sm h-full">

@@ -22,6 +22,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { LoaderCircle } from "lucide-react";
 import { login } from "@/store/thunks/authThunk";
 import { userApi } from "@/store/services/userApi";
 import { useAppDispatch } from "@/store/hooks";
@@ -41,6 +42,7 @@ type FormData = z.infer<typeof formSchema>;
 export default function LoginPage() {
   const router = useRouter();
   const [reload] = useQueryState("reload");
+  const [isLoading, setLoading] = useState(false);
 
   const dispatch = useAppDispatch();
   const [error, setError] = useState("");
@@ -60,12 +62,14 @@ export default function LoginPage() {
   }, [reload]);
 
   const onSubmit = async (values: FormData) => {
+    setLoading(true);
     try {
       await dispatch(login(values)).unwrap();
       await refreshTokenLoop();
       const response = await dispatch(
         userApi.endpoints.getMe.initiate(),
       ).unwrap();
+      setLoading(false);
       form.reset();
       const userType = response.data.userType;
       router.replace(redirectionPages[userType].path);
@@ -128,8 +132,9 @@ export default function LoginPage() {
                   </FormItem>
                 )}
               />
-              <Button className="w-full" type="submit">
+              <Button className="w-full" type="submit" disabled={isLoading}>
                 Sign in
+                {isLoading && <LoaderCircle className="animate-spin" />}
               </Button>
             </CardContent>
             <CardFooter className="justify-center flex-col">

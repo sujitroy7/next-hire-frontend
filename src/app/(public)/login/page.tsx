@@ -69,7 +69,6 @@ export default function LoginPage() {
       const response = await dispatch(
         userApi.endpoints.getMe.initiate(),
       ).unwrap();
-      setLoading(false);
       form.reset();
       const userType = response.data.userType;
       router.replace(redirectionPages[userType].path);
@@ -78,6 +77,8 @@ export default function LoginPage() {
       if (typeof error === "string") {
         setError(error);
       }
+    } finally {
+      setLoading(false);
     }
   };
 
